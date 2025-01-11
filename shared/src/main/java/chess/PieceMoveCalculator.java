@@ -146,7 +146,78 @@ public class PieceMoveCalculator {
     }
 
     public ArrayList<ChessMove> QueenMovesCalculator(){
-        return null;
+        var PossibleMoves = new ArrayList<ChessMove>();
+        ChessPosition pos = new ChessPosition(position.getRow(), position.getColumn());
+        // To the left now y'all
+        for (var row = -1; position.getRow() + row > 0; row--) {
+            pos = new ChessPosition(position.getRow() + row, position.getColumn());
+            if (board.getPiece(pos) == null || OtherColor(pos)) {
+                ChessMove move = new ChessMove(position, pos, null );
+                PossibleMoves.add(move);
+            }
+            if (board.getPiece(pos) != null) break;
+        }
+        for (var row = +1; position.getRow() + row <= 8; row++) {
+            pos = new ChessPosition(position.getRow() + row, position.getColumn());
+            if (board.getPiece(pos) == null || OtherColor(pos)) {
+                ChessMove move = new ChessMove(position, pos, null );
+                PossibleMoves.add(move);
+            }
+            if (board.getPiece(pos) != null) break;
+        }
+        for (var col = -1; position.getColumn() + col > 0; col--) {
+            pos = new ChessPosition( position.getRow(), position.getColumn() + col);
+            if (board.getPiece(pos) == null || OtherColor(pos)) {
+                ChessMove move = new ChessMove(position, pos, null );
+                PossibleMoves.add(move);
+            }
+            if (board.getPiece(pos) != null) break;
+        }
+        for (var col = 1; position.getColumn() + col <= 8; col++) {
+            pos = new ChessPosition(position.getRow(), position.getColumn() + col);
+            if (board.getPiece(pos) == null || OtherColor(pos)) {
+                ChessMove move = new ChessMove(position, pos, null );
+                PossibleMoves.add(move);
+            }
+            if (board.getPiece(pos) != null) break;
+        }
+        // diagonals
+        for (int row = -1, col = -1; position.getColumn() + col > 0 && position.getRow() + row > 0; row--, col--){
+            pos = new ChessPosition(position.getRow() + row, position.getColumn() + col);
+            if (board.getPiece(pos) == null || OtherColor(pos)) {
+                ChessMove move = new ChessMove(position, pos, null );
+                PossibleMoves.add(move);
+            }
+            if (board.getPiece(pos) != null) break;
+        }
+        for (int row = +1, col = -1; position.getColumn() + col > 0 && position.getRow() + row <= 8; row++, col--){
+            pos = new ChessPosition(position.getRow() + row, position.getColumn() + col);
+            if (board.getPiece(pos) == null || OtherColor(pos)) {
+                ChessMove move = new ChessMove(position, pos, null );
+                PossibleMoves.add(move);
+            }
+            if (board.getPiece(pos) != null) break;
+        }
+        for (int row = +1, col = +1; position.getColumn() + col <= 8 && position.getRow() + row <= 8; row++, col++){
+            pos = new ChessPosition(position.getRow() + row, position.getColumn() + col);
+            if (board.getPiece(pos) == null || OtherColor(pos)) {
+                ChessMove move = new ChessMove(position, pos, null );
+                PossibleMoves.add(move);
+            }
+            if (board.getPiece(pos) != null) break;
+        }
+        for (int row = -1, col = +1; position.getColumn() + col <= 8 && position.getRow() + row > 0; row--, col++){
+            pos = new ChessPosition(position.getRow() + row, position.getColumn() + col);
+            if (board.getPiece(pos) == null || OtherColor(pos)) {
+                ChessMove move = new ChessMove(position, pos, null );
+                PossibleMoves.add(move);
+            }
+            if (board.getPiece(pos) != null) break;
+        }
+
+
+
+        return PossibleMoves;
     }
 
 
