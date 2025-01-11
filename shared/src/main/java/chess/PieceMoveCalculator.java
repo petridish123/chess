@@ -22,10 +22,10 @@ public class PieceMoveCalculator {
             return KingMovesCalculator();
         }
         if (type == ChessPiece.PieceType.QUEEN) {
-            return null;
+            return QueenMovesCalculator();
         }
         if (type == ChessPiece.PieceType.BISHOP) {
-            return null;
+            return BishopMovesCalculator();
         }
         if (type == ChessPiece.PieceType.KNIGHT) {
             return null;
@@ -101,8 +101,48 @@ public class PieceMoveCalculator {
 
         return PossibleMoves;
     }
+
     public ArrayList<ChessMove> BishopMovesCalculator(){
-        return null;
+        ArrayList<ChessMove> PossibleMoves = new ArrayList<>();
+        ChessPosition pos = new ChessPosition(position.getRow(), position.getColumn());
+
+        // diagonals
+        for (int row = -1, col = -1; position.getColumn() + col > 0 && position.getRow() + row > 0; row--, col--){
+            pos = new ChessPosition(position.getRow() + row, position.getColumn() + col);
+            if (board.getPiece(pos) == null || OtherColor(pos)) {
+                ChessMove move = new ChessMove(position, pos, null );
+                PossibleMoves.add(move);
+            }
+            if (board.getPiece(pos) != null) break;
+        }
+        for (int row = +1, col = -1; position.getColumn() + col > 0 && position.getRow() + row <= 8; row++, col--){
+            pos = new ChessPosition(position.getRow() + row, position.getColumn() + col);
+            if (board.getPiece(pos) == null || OtherColor(pos)) {
+                ChessMove move = new ChessMove(position, pos, null );
+                PossibleMoves.add(move);
+            }
+            if (board.getPiece(pos) != null) break;
+        }
+        for (int row = +1, col = +1; position.getColumn() + col <= 8 && position.getRow() + row <= 8; row++, col++){
+            pos = new ChessPosition(position.getRow() + row, position.getColumn() + col);
+            if (board.getPiece(pos) == null || OtherColor(pos)) {
+                ChessMove move = new ChessMove(position, pos, null );
+                PossibleMoves.add(move);
+            }
+            if (board.getPiece(pos) != null) break;
+        }
+        for (int row = -1, col = +1; position.getColumn() + col <= 8 && position.getRow() + row > 0; row--, col++){
+            pos = new ChessPosition(position.getRow() + row, position.getColumn() + col);
+            if (board.getPiece(pos) == null || OtherColor(pos)) {
+                ChessMove move = new ChessMove(position, pos, null );
+                PossibleMoves.add(move);
+            }
+            if (board.getPiece(pos) != null) break;
+        }
+
+
+
+        return PossibleMoves;
     }
 
     public ArrayList<ChessMove> QueenMovesCalculator(){
