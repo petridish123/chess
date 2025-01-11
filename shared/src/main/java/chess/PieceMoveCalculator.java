@@ -15,10 +15,63 @@ public class PieceMoveCalculator {
         this.piece = board.getPiece(position);
     }
     public boolean inBounds(ChessPosition pos){
-        return pos.getColumn() >= 0 && pos.getColumn() < 8 && pos.getRow() >= 0 && pos.getRow() < 8;
+        return pos.getColumn() > 0 && pos.getColumn() <= 8 && pos.getRow() > 0 && pos.getRow() <= 8;
     }
-    public Collection<ChessMove> KingMovesCalculator(){
+
+
+    public ArrayList<ChessMove> KingMovesCalculator(){
         var PossibleMoves = new ArrayList<ChessMove>();
+
+//        ChessPosition pos = new ChessPosition(position.getRow()+1, position.getColumn());
+//        if (inBounds(pos) && board.getPiece(pos) == null) {
+//            ChessMove move = new ChessMove(position, pos, null );
+//            PossibleMoves.add(move);
+//
+//        }
+//        pos = new ChessPosition(position.getRow()-1, position.getColumn());
+//        if (inBounds(pos) && board.getPiece(pos) == null) {
+//            ChessMove move = new ChessMove(position, pos, null );
+//            PossibleMoves.add(move);
+//
+//        }
+//        pos = new ChessPosition(position.getRow(), position.getColumn()+1);
+//        if (inBounds(pos) && board.getPiece(pos) == null) {
+//            ChessMove move = new ChessMove(position, pos, null );
+//            PossibleMoves.add(move);
+//
+//        }
+//        pos = new ChessPosition(position.getRow(), position.getColumn()-1);
+//        if (inBounds(pos) && board.getPiece(pos) == null) {
+//            ChessMove move = new ChessMove(position, pos, null );
+//            PossibleMoves.add(move);
+//
+//        }
+//        pos = new ChessPosition(position.getRow()+1, position.getColumn()+1);
+//        if (inBounds(pos) && board.getPiece(pos) == null) {
+//            ChessMove move = new ChessMove(position, pos, null );
+//            PossibleMoves.add(move);
+//
+//        }
+//        pos = new ChessPosition(position.getRow()+1, position.getColumn()-1);
+//        if (inBounds(pos) && board.getPiece(pos) == null) {
+//            ChessMove move = new ChessMove(position, pos, null );
+//            PossibleMoves.add(move);
+//
+//        }
+//        pos = new ChessPosition(position.getRow()-1, position.getColumn()+1);
+//        if (inBounds(pos) && board.getPiece(pos) == null) {
+//            ChessMove move = new ChessMove(position, pos, null );
+//            PossibleMoves.add(move);
+//
+//        }
+//        pos = new ChessPosition(position.getRow()-1, position.getColumn()-1);
+//        if (inBounds(pos) && board.getPiece(pos) == null) {
+//            ChessMove move = new ChessMove(position, pos, null );
+//            PossibleMoves.add(move);
+//
+//        }
+
+
 
         for (var row = -1; row < 2; row++) {
             for (var col = -1; col < 2; col++) {
@@ -26,7 +79,6 @@ public class PieceMoveCalculator {
                 if (inBounds(pos) && board.getPiece(pos) == null) {
                     ChessMove move = new ChessMove(position, pos, null );
                     PossibleMoves.add(move);
-                    System.out.println(move.toString());
                 }
             }
         }
