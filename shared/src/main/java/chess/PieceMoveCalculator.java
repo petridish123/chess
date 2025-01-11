@@ -14,6 +14,32 @@ public class PieceMoveCalculator {
         this.position = position;
         this.piece = board.getPiece(position);
     }
+
+    public ArrayList<ChessMove> calculate() {
+        ChessPiece.PieceType type = piece.getPieceType();
+
+        if (type == ChessPiece.PieceType.KING) {
+            return KingMovesCalculator();
+        }
+        if (type == ChessPiece.PieceType.QUEEN) {
+            return null;
+        }
+        if (type == ChessPiece.PieceType.BISHOP) {
+            return null;
+        }
+        if (type == ChessPiece.PieceType.KNIGHT) {
+            return null;
+        }
+        if (type == ChessPiece.PieceType.PAWN) {
+            return null;
+        }
+        if (type == ChessPiece.PieceType.ROOK) {
+            return RookMovesCalculator();
+        }
+        return new ArrayList<ChessMove>();
+    }
+
+
     public boolean inBounds(ChessPosition pos){
         return pos.getColumn() > 0 && pos.getColumn() <= 8 && pos.getRow() > 0 && pos.getRow() <= 8;
     }
@@ -24,58 +50,6 @@ public class PieceMoveCalculator {
 
     public ArrayList<ChessMove> KingMovesCalculator(){
         var PossibleMoves = new ArrayList<ChessMove>();
-
-//        ChessPosition pos = new ChessPosition(position.getRow()+1, position.getColumn());
-//        if (inBounds(pos) && board.getPiece(pos) == null) {
-//            ChessMove move = new ChessMove(position, pos, null );
-//            PossibleMoves.add(move);
-//
-//        }
-//        pos = new ChessPosition(position.getRow()-1, position.getColumn());
-//        if (inBounds(pos) && board.getPiece(pos) == null) {
-//            ChessMove move = new ChessMove(position, pos, null );
-//            PossibleMoves.add(move);
-//
-//        }
-//        pos = new ChessPosition(position.getRow(), position.getColumn()+1);
-//        if (inBounds(pos) && board.getPiece(pos) == null) {
-//            ChessMove move = new ChessMove(position, pos, null );
-//            PossibleMoves.add(move);
-//
-//        }
-//        pos = new ChessPosition(position.getRow(), position.getColumn()-1);
-//        if (inBounds(pos) && board.getPiece(pos) == null) {
-//            ChessMove move = new ChessMove(position, pos, null );
-//            PossibleMoves.add(move);
-//
-//        }
-//        pos = new ChessPosition(position.getRow()+1, position.getColumn()+1);
-//        if (inBounds(pos) && board.getPiece(pos) == null) {
-//            ChessMove move = new ChessMove(position, pos, null );
-//            PossibleMoves.add(move);
-//
-//        }
-//        pos = new ChessPosition(position.getRow()+1, position.getColumn()-1);
-//        if (inBounds(pos) && board.getPiece(pos) == null) {
-//            ChessMove move = new ChessMove(position, pos, null );
-//            PossibleMoves.add(move);
-//
-//        }
-//        pos = new ChessPosition(position.getRow()-1, position.getColumn()+1);
-//        if (inBounds(pos) && board.getPiece(pos) == null) {
-//            ChessMove move = new ChessMove(position, pos, null );
-//            PossibleMoves.add(move);
-//
-//        }
-//        pos = new ChessPosition(position.getRow()-1, position.getColumn()-1);
-//        if (inBounds(pos) && board.getPiece(pos) == null) {
-//            ChessMove move = new ChessMove(position, pos, null );
-//            PossibleMoves.add(move);
-//
-//        }
-
-
-
         for (var row = -1; row < 2; row++) {
             for (var col = -1; col < 2; col++) {
                 ChessPosition pos = new ChessPosition(position.getRow() + row, position.getColumn()+col);
@@ -86,6 +60,53 @@ public class PieceMoveCalculator {
             }
         }
         return PossibleMoves;
+    }
+
+    public ArrayList<ChessMove> RookMovesCalculator(){
+        var PossibleMoves = new ArrayList<ChessMove>();
+        ChessPosition pos = new ChessPosition(position.getRow(), position.getColumn());
+        // To the left now y'all
+        for (var row = -1; position.getRow() + row > 0; row--) {
+            pos = new ChessPosition(position.getRow() + row, position.getColumn());
+            if (board.getPiece(pos) == null || OtherColor(pos)) {
+                ChessMove move = new ChessMove(position, pos, null );
+                PossibleMoves.add(move);
+            }
+            if (board.getPiece(pos) != null) break;
+        }
+        for (var row = +1; position.getRow() + row <= 8; row++) {
+            pos = new ChessPosition(position.getRow() + row, position.getColumn());
+            if (board.getPiece(pos) == null || OtherColor(pos)) {
+                ChessMove move = new ChessMove(position, pos, null );
+                PossibleMoves.add(move);
+            }
+            if (board.getPiece(pos) != null) break;
+        }
+        for (var col = -1; position.getColumn() + col > 0; col--) {
+            pos = new ChessPosition( position.getRow(), position.getColumn() + col);
+            if (board.getPiece(pos) == null || OtherColor(pos)) {
+                ChessMove move = new ChessMove(position, pos, null );
+                PossibleMoves.add(move);
+            }
+            if (board.getPiece(pos) != null) break;
+        }
+        for (var col = 1; position.getColumn() + col <= 8; col++) {
+            pos = new ChessPosition(position.getRow(), position.getColumn() + col);
+            if (board.getPiece(pos) == null || OtherColor(pos)) {
+                ChessMove move = new ChessMove(position, pos, null );
+                PossibleMoves.add(move);
+            }
+            if (board.getPiece(pos) != null) break;
+        }
+
+        return PossibleMoves;
+    }
+    public ArrayList<ChessMove> BishopMovesCalculator(){
+        return null;
+    }
+
+    public ArrayList<ChessMove> QueenMovesCalculator(){
+        return null;
     }
 
 
