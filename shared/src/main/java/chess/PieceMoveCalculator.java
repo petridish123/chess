@@ -17,6 +17,9 @@ public class PieceMoveCalculator {
     public boolean inBounds(ChessPosition pos){
         return pos.getColumn() > 0 && pos.getColumn() <= 8 && pos.getRow() > 0 && pos.getRow() <= 8;
     }
+    public boolean OtherColor(ChessPosition pos){
+        return board.getPiece(pos).getTeamColor() != piece.getTeamColor();
+    }
 
 
     public ArrayList<ChessMove> KingMovesCalculator(){
@@ -76,7 +79,7 @@ public class PieceMoveCalculator {
         for (var row = -1; row < 2; row++) {
             for (var col = -1; col < 2; col++) {
                 ChessPosition pos = new ChessPosition(position.getRow() + row, position.getColumn()+col);
-                if (inBounds(pos) && board.getPiece(pos) == null) {
+                if (inBounds(pos) && (board.getPiece(pos) == null || OtherColor(pos))) {
                     ChessMove move = new ChessMove(position, pos, null );
                     PossibleMoves.add(move);
                 }
