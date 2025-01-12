@@ -245,8 +245,6 @@ public class PieceMoveCalculator {
         pos = new ChessPosition(position.getRow() + 1, position.getColumn() - 1);
         if (board.getPiece(pos) != null && board.getPiece(pos).getTeamColor() == ChessGame.TeamColor.BLACK) PossibleMoves.add(new ChessMove(position, pos, promotion ));
 
-
-
         return PossibleMoves;
     }
 
