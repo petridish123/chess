@@ -227,6 +227,7 @@ public class PieceMoveCalculator {
     public ArrayList<ChessMove> PawnMovesCalculatorWhite(){
         var PossibleMoves = new ArrayList<ChessMove>();
         ChessPosition pos = new ChessPosition(position.getRow()+ 1, position.getColumn());
+        // creating a temporary promotion variable
         ChessPiece.PieceType promotion = null;
         if (position.getRow() == 7) promotion = ChessPiece.PieceType.QUEEN;
 
@@ -234,16 +235,15 @@ public class PieceMoveCalculator {
             ChessMove move = new ChessMove(position, pos, promotion );
             PossibleMoves.add(move);
             pos = new ChessPosition(position.getRow() + 2, position.getColumn());
-            if (board.getPiece(pos) == null && position.getRow() == 2){
+            if (position.getRow() == 2 && board.getPiece(pos) == null){
                 ChessMove move2 = new ChessMove(position, pos, promotion );
                 PossibleMoves.add(move2);
             }
         }
-
         pos = new ChessPosition(position.getRow() + 1, position.getColumn() + 1);
-        if (board.getPiece(pos) != null && board.getPiece(pos).getTeamColor() == ChessGame.TeamColor.BLACK) PossibleMoves.add(new ChessMove(position, pos, promotion ));
+        if (inBounds(pos) && board.getPiece(pos) != null && board.getPiece(pos).getTeamColor() == ChessGame.TeamColor.BLACK) PossibleMoves.add(new ChessMove(position, pos, promotion ));
         pos = new ChessPosition(position.getRow() + 1, position.getColumn() - 1);
-        if (board.getPiece(pos) != null && board.getPiece(pos).getTeamColor() == ChessGame.TeamColor.BLACK) PossibleMoves.add(new ChessMove(position, pos, promotion ));
+        if (inBounds(pos) && board.getPiece(pos) != null && board.getPiece(pos).getTeamColor() == ChessGame.TeamColor.BLACK) PossibleMoves.add(new ChessMove(position, pos, promotion ));
 
         return PossibleMoves;
     }
