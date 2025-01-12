@@ -28,7 +28,7 @@ public class PieceMoveCalculator {
             return BishopMovesCalculator();
         }
         if (type == ChessPiece.PieceType.KNIGHT) {
-            return null;
+            return KnightMoves();
         }
         if (type == ChessPiece.PieceType.PAWN) {
             if (piece.getTeamColor() == ChessGame.TeamColor.BLACK) {
@@ -288,7 +288,26 @@ public class PieceMoveCalculator {
 
     }
 
+    public ArrayList<ChessMove> KnightMoves(){
+        ArrayList<ChessMove> possibleMoves = new ArrayList<>();
+        ArrayList<ChessPosition> positions = new ArrayList<>();
+        // knight moves in an L in 8 directions GAH!
+        positions.add(new ChessPosition(position.getRow() + 2, position.getColumn() - 1));
+        positions.add(new ChessPosition(position.getRow() + 2, position.getColumn() + 1));
+        positions.add(new ChessPosition(position.getRow() - 2, position.getColumn() + 1));
+        positions.add(new ChessPosition(position.getRow() - 2, position.getColumn() - 1));
+        positions.add(new ChessPosition(position.getRow() + 1, position.getColumn() - 2));
+        positions.add(new ChessPosition(position.getRow() - 1, position.getColumn() - 2));
+        positions.add(new ChessPosition(position.getRow() - 1, position.getColumn() + 2));
+        positions.add(new ChessPosition(position.getRow() + 1, position.getColumn() + 2));
 
+        for (ChessPosition pos : positions) {
+            if (inBounds(pos) && (board.getPiece(pos) == null || OtherColor(pos))) {
+                possibleMoves.add(new ChessMove(position, pos, null));
+            }
+        }
+        return possibleMoves;
+    }
 
 
 }
