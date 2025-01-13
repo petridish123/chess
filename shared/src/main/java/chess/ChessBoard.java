@@ -46,6 +46,8 @@ public class ChessBoard {
                 board[row][column] = null;
             }
         }
+
+
     }
 
     @Override
