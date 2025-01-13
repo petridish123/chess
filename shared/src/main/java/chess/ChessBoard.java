@@ -40,12 +40,39 @@ public class ChessBoard {
      * Sets the board to the default starting board
      * (How the game of chess normally starts)
      */
+    private void setPawns(int row, ChessGame.TeamColor teamColor) {
+        for (int i = 1; i <= 8; i++) {
+            addPiece(new ChessPosition(row,i), new ChessPiece(teamColor, ChessPiece.PieceType.PAWN));
+        }
+    }
+
+    private void setRow(int row, ChessGame.TeamColor teamColor) {
+        addPiece(new ChessPosition(row,1), new ChessPiece(teamColor, ChessPiece.PieceType.ROOK));
+        addPiece(new ChessPosition(row,8), new ChessPiece(teamColor, ChessPiece.PieceType.ROOK));
+
+        addPiece(new ChessPosition(row,2), new ChessPiece(teamColor, ChessPiece.PieceType.KNIGHT));
+        addPiece(new ChessPosition(row,7), new ChessPiece(teamColor, ChessPiece.PieceType.KNIGHT));
+
+        addPiece(new ChessPosition(row,3), new ChessPiece(teamColor, ChessPiece.PieceType.BISHOP));
+        addPiece(new ChessPosition(row,6), new ChessPiece(teamColor, ChessPiece.PieceType.BISHOP));
+
+        addPiece(new ChessPosition(row,4), new ChessPiece(teamColor, ChessPiece.PieceType.QUEEN));
+
+        addPiece(new ChessPosition(row,5), new ChessPiece(teamColor, ChessPiece.PieceType.KING));
+    }
+
     public void resetBoard() {
         for (int row = 0; row < 8; row++) {
             for (int column = 0; column < 8; column++) {
                 board[row][column] = null;
             }
         }
+        // Black side
+        setPawns(7, ChessGame.TeamColor.BLACK);
+        setPawns(2, ChessGame.TeamColor.WHITE);
+
+        setRow(8, ChessGame.TeamColor.BLACK);
+        setRow(1, ChessGame.TeamColor.WHITE);
 
 
     }
