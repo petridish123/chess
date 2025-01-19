@@ -1,5 +1,6 @@
 package chess;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 /**
@@ -65,6 +66,9 @@ public class ChessGame {
         throw new RuntimeException("Not implemented");
     }
 
+    public TeamColor OppositeTeamColor(TeamColor teamColor) {
+        return teamColor == TeamColor.WHITE ? TeamColor.BLACK : TeamColor.WHITE;
+    }
     /**
      * Determines if the given team is in check
      *
@@ -72,8 +76,28 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        ChessPiece piece;
+        for (var i = 1; i <= 8; i++) {
+            for (var j = 1; j <= 8; j++) {
+                ChessPosition pos= new ChessPosition(i, j);
+                piece = board.getPiece(pos);
+                if (piece != null && piece.getTeamColor() != teamColor) {
+                    for (ChessMove move : piece.pieceMoves(board, pos)) {
+                        if (KingFound(move)) {
+                            return true;
+                        }
+                    }
+                }
+
+            }
+        }
+        return false;
     }
+
+    public boolean KingFound(ChessMove move) {
+        return board.getPiece(move.getEndPosition()) != null && board.getPiece(move.getEndPosition()).getPieceType() == ChessPiece.PieceType.KING;
+    }
+
 
     /**
      * Determines if the given team is in checkmate
@@ -102,7 +126,7 @@ public class ChessGame {
      * @param board the new board to use
      */
     public void setBoard(ChessBoard board) {
-        board.resetBoard();
+        this.board = board;
     }
 
     /**
