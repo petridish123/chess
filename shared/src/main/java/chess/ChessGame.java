@@ -15,6 +15,7 @@ public class ChessGame {
     public ChessGame() {
         this.board = new ChessBoard();
         this.teamColorTurn = TeamColor.WHITE;
+        this.board.resetBoard();
     }
 
     /**
@@ -135,8 +136,8 @@ public class ChessGame {
      * @return the chessboard
      */
     public ChessBoard getBoard() {
-        this.board = new ChessBoard();
-        board.resetBoard();
-        return board;
+//        this.board = new ChessBoard();
+//        board.resetBoard();
+        return this.board;
     }
 }
