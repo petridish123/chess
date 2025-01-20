@@ -65,12 +65,15 @@ public class ChessGame {
     }
 
     public boolean validateMove(ChessMove move) {
-        ChessBoard board = this.board.clone();
+
+        ChessBoard boardy = this.board.clone();
         // make move and check if in check
         ChessPiece piece = board.getPiece(move.getStartPosition());
         board.addPiece(move.getEndPosition(), piece);
         board.addPiece(move.getStartPosition(), null);
-        return !isInCheck(piece.getTeamColor());
+        boolean check = !isInCheck(piece.getTeamColor());
+        board = boardy;
+        return check;
     }
 
     /**
@@ -125,6 +128,9 @@ public class ChessGame {
     public boolean KingFound(ChessMove move) {
         return board.getPiece(move.getEndPosition()) != null && board.getPiece(move.getEndPosition()).getPieceType() == ChessPiece.PieceType.KING;
     }
+
+
+
 
 
     /**
