@@ -119,7 +119,6 @@ public class ChessGame {
                         }
                     }
                 }
-
             }
         }
         return false;
@@ -129,7 +128,19 @@ public class ChessGame {
         return board.getPiece(move.getEndPosition()) != null && board.getPiece(move.getEndPosition()).getPieceType() == ChessPiece.PieceType.KING;
     }
 
-
+    Collection<ChessMove> getTeamMoves(TeamColor teamColor) {
+        ArrayList<ChessMove> moves = new ArrayList<>();
+        for (var i = 1; i <= 8; i++) {
+            for (var j = 1; j <= 8; j++) {
+                ChessPosition pos= new ChessPosition(i, j);
+                ChessPiece piece = board.getPiece(pos);
+                if (piece != null && piece.getTeamColor() == teamColor) {
+                    moves.addAll(validMoves(pos));
+                }
+            }
+        }
+        return moves;
+    }
 
 
 
@@ -166,7 +177,8 @@ public class ChessGame {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        Collection<ChessMove> moves = getTeamMoves(teamColor);
+        return moves.isEmpty() && !isInCheck(teamColor);
     }
 
     /**
