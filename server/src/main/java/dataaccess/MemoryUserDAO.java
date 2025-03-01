@@ -26,11 +26,12 @@ public class MemoryUserDAO implements UserDataAccess{
     public void createUser(UserData user) throws DataAccessException {
         try{
             getUserData(user.username());
-            throw new DataAccessException("User already exists");
         }
         catch(DataAccessException e){
             database.add(user);
+            return;
         }
+        throw new DataAccessException("User already exists");
 
     }
 

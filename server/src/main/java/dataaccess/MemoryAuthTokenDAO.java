@@ -31,11 +31,12 @@ public class MemoryAuthTokenDAO implements AuthTokenDataAccess{
     public void insertAuthData(AuthData authData) throws  DataAccessException{
         try {
             this.getAuthData(authData.authToken());
-            throw new DataAccessException("Already taken");
         }
         catch (DataAccessException e) {
             database.add(authData);
+            return;
         }
+        throw new DataAccessException("Auth token already taken");
 
     }
 
