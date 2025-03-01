@@ -14,4 +14,12 @@ import dataaccess.*;
 
 
 public class GameService {
+
+    GameDataAccess gameDAO;
+
+    public GameService(GameDataAccess gameDAO){
+        this.gameDAO = gameDAO;
+    }
+
+    
 }
