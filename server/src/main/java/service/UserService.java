@@ -52,6 +52,11 @@ public class UserService {
         var token = authTokenDAO.getAuthData(authToken.authToken()); // does not exist
         authTokenDAO.deleteAuthData(token.authToken());
     }
+
+    void clear(){
+        authTokenDAO.clear();
+        userDAO.clear();
+    }
     
 
 }
