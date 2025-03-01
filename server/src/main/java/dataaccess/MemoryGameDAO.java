@@ -54,6 +54,7 @@ public class MemoryGameDAO implements GameDataAccess{
         database.removeIf(gameData -> gameData.gameID() == id);
     }
 
+    @Override
     public void clear(){
         database.clear();
     }

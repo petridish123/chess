@@ -9,5 +9,6 @@ public interface GameDataAccess {
     public void createGame(GameData game) throws DataAccessException;
     public void updateGame(GameData game) ;
     public void deleteGame(int id);
+    public void clear();
 
 }

@@ -2,11 +2,11 @@ package service;
 
 import model.*;
 import dataaccess.*;
-
+import java.util.HashSet;
 /*
- *  clear
+ *  clear       ✅
  *  add game
- *  list games
+ *  list games  ✅
  *  join game
  *
  */
@@ -16,10 +16,23 @@ import dataaccess.*;
 public class GameService {
 
     GameDataAccess gameDAO;
-
-    public GameService(GameDataAccess gameDAO){
+    AuthTokenDataAccess authTokenDAO;
+    public GameService(GameDataAccess gameDAO, AuthTokenDataAccess authTokenDAO  ) {
         this.gameDAO = gameDAO;
+        this.authTokenDAO = authTokenDAO;
     }
 
-    
+    void clear() {
+        gameDAO.clear();
+        authTokenDAO.clear();
+    }
+
+    HashSet<GameData> listGames(AuthData authData) throws DataAccessException {
+        authTokenDAO.getAuthData(authData.authToken()); // throws data access exception
+        return gameDAO.listGames();
+    }
+
+
+
+
 }
