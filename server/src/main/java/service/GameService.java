@@ -10,7 +10,7 @@ import chess.*;
  *  clear       ✅
  *  add game    ✅
  *  list games  ✅
- *  join game
+ *  join game   ✅
  *
  */
 
@@ -73,10 +73,8 @@ public class GameService {
                 throw new DataAccessException("Black username already exists");
             }
         }
-        
-
-
-
+        GameData new_game = new GameData(gameID, gameName, whiteUser, blackUser, game.game());
+        gameDAO.updateGame(new_game);
     }
 
 
