@@ -28,6 +28,18 @@ public class MemoryGameDAO implements GameDataAccess{
     }
 
     @Override
+    public boolean getGameByname(String name) throws DataAccessException{
+        for (GameData gameData : database) {
+            if (gameData.gameName().equals(name)) {
+
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    @Override
     public void createGame(GameData game) throws DataAccessException{
         try{
             this.getGame(game.gameID());

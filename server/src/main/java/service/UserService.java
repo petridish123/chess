@@ -48,8 +48,8 @@ public class UserService {
         return auth;
     }
 
-    void logoutUser(AuthData authToken) throws DataAccessException {
-        var token = authTokenDAO.getAuthData(authToken.authToken()); // does not exist
+    void logoutUser(String authToken) throws DataAccessException {
+        var token = authTokenDAO.getAuthData(authToken); // does not exist
         authTokenDAO.deleteAuthData(token.authToken());
     }
 
