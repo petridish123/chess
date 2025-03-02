@@ -32,7 +32,10 @@ public class GameService {
         return gameDAO.listGames();
     }
 
-
+    GameData createGame(AuthData authData, String gameName) throws DataAccessException {
+        authTokenDAO.getAuthData(authData.authToken()); // throws data access exception
+        gameDAO.createGame(new GameData()); // When implementing the SQL version, make sure to throw the exception in the DAO
+    }
 
 
 }
