@@ -3,6 +3,8 @@ package service;
 import model.*;
 import dataaccess.*;
 import java.util.HashSet;
+import java.util.Objects;
+
 import chess.*;
 /*
  *  clear       ✅
@@ -46,10 +48,34 @@ public class GameService {
     }
 
     void joinGame(String authToken, int gameID, String Color) throws DataAccessException {
-        gameDAO.getGame(gameID); // throws exception if it doesn't exist
-        // check to see if the game exists (getGame)
-        // get authToken and see if it is correct
-        // get the username from the authData
+        GameData game = gameDAO.getGame(gameID); // throws exception if it doesn't exist
+        AuthData authData = authTokenDAO.getAuthData(authToken); // throws error as well *kissy face*
+        String username = authData.username();
+
+        String whiteUser = game.whiteUsername();
+        String blackUser = game.blackUsername();
+        ChessGame chessGame = game.game();
+        String gameName = game.gameName();
+
+        if (Objects.equals(Color, "WHITE")){
+            if (game.whiteUsername().isEmpty()){
+                whiteUser = username;
+            }
+            else{
+                throw new DataAccessException("White username already exists");
+            }
+        }
+        if (Objects.equals(Color, "BLACK")){
+            if (game.blackUsername().isEmpty()){
+                blackUser = username;
+            }
+            else{
+                throw new DataAccessException("Black username already exists");
+            }
+        }
+
+
+
 
     }
 
