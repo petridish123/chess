@@ -65,7 +65,7 @@ public class GameService {
                 throw new DataAccessException("White username already exists");
             }
         }
-        if (Objects.equals(Color, "BLACK")){
+        else if (Objects.equals(Color, "BLACK")){
             if (game.blackUsername().isEmpty()){
                 blackUser = username;
             }
@@ -73,7 +73,7 @@ public class GameService {
                 throw new DataAccessException("Black username already exists");
             }
         }
-
+        
 
 
 
