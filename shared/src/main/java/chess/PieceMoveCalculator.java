@@ -70,22 +70,12 @@ public class PieceMoveCalculator {
         ChessPosition pos;
         // To the left now y'all
         for (var row = -1; position.getRow() + row > 0; row--) {
-            pos = new ChessPosition(position.getRow() + row, position.getColumn());
-            if (board.getPiece(pos) == null || otherColor(pos)) {
-                ChessMove move = new ChessMove(position, pos, null );
-                possibleMoves.add(move);
-            }
-            if (board.getPiece(pos) != null){
+            if (straights(possibleMoves, row)) {
                 break;
             }
         }
         for (var row = +1; position.getRow() + row <= 8; row++) {
-            pos = new ChessPosition(position.getRow() + row, position.getColumn());
-            if (board.getPiece(pos) == null || otherColor(pos)) {
-                ChessMove move = new ChessMove(position, pos, null );
-                possibleMoves.add(move);
-            }
-            if (board.getPiece(pos) != null){
+            if (straights(possibleMoves, row)) {
                 break;
             }
         }
@@ -111,6 +101,19 @@ public class PieceMoveCalculator {
         }
 
         return possibleMoves;
+    }
+
+    private boolean straights(ArrayList<ChessMove> possibleMoves, int row) {
+        ChessPosition pos;
+        pos = new ChessPosition(position.getRow() + row, position.getColumn());
+        if (board.getPiece(pos) == null || otherColor(pos)) {
+            ChessMove move = new ChessMove(position, pos, null );
+            possibleMoves.add(move);
+        }
+        if (board.getPiece(pos) != null){
+            return true;
+        }
+        return false;
     }
 
     public ArrayList<ChessMove> bishopMovesCalculator(){
