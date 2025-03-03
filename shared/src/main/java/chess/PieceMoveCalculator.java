@@ -208,7 +208,7 @@ public class PieceMoveCalculator {
 
     }
 
-    private void exists(ChessGame.TeamColor opposite, int endRow, ArrayList<ChessMove> possibleMoves, ChessPosition pos, ChessPiece.PieceType promotion) {
+    void exists(ChessGame.TeamColor opposite,int endRow,ArrayList<ChessMove> possibleMoves,ChessPosition pos,ChessPiece.PieceType promotion) {
         if (inBounds(pos) && board.getPiece(pos) != null && board.getPiece(pos).getTeamColor() == opposite) {
             if (position.getRow() == endRow) {
                 promotionMove(possibleMoves, pos);
