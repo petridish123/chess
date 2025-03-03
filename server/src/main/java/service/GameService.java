@@ -75,8 +75,8 @@ public class GameService {
         } else{
             throw new InvalidInput("Not a valid color");
         }
-        GameData new_game = new GameData(gameID, gameName,game.game(), whiteUser, blackUser );
-        gameDAO.updateGame(new_game);
+        GameData newGame = new GameData(gameID, gameName,game.game(), whiteUser, blackUser );
+        gameDAO.updateGame(newGame);
     }
 
 
