@@ -61,10 +61,6 @@ public class MemoryGameDAO implements GameDataAccess{
         }
     }
 
-    @Override
-    public void deleteGame(int id) {
-        database.removeIf(gameData -> gameData.gameID() == id);
-    }
 
     @Override
     public void clear(){

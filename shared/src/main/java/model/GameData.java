@@ -6,20 +6,11 @@ public record GameData(int gameID, String gameName,  ChessGame game, String whit
 
     public GameData(String gameName){
         this(0, gameName, null, null, null);
-//        this.gameName = gameName;
-//        this.game = null;
-//        this.whiteUsername = "";
-//        this.blackUsername = "";
-//        this.gameID = 0;
+
     }
 
     public GameData(int gameID, String gameName, ChessGame game) {
         this(gameID, gameName, game, null, null);
-//        this.gameID = gameID;
-//        this.gameName = gameName;
-//        this.game = game;
-//        this.whiteUsername = "";
-//        this.blackUsername = "";
     }
 
     public GameData( String whiteUsername, int gameID){

@@ -113,7 +113,7 @@ public class ChessGame {
                 ChessPosition pos= new ChessPosition(i, j);
                 piece = board.getPiece(pos);
                 if (piece != null && piece.getTeamColor() != teamColor) {
-                    
+
                         if (kingFound(piece.pieceMoves(board, pos))) {
                             return true;
                         }

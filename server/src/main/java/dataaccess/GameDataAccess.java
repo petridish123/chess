@@ -8,7 +8,6 @@ public interface GameDataAccess {
     public GameData getGame(int id) throws DataAccessException;
     public void createGame(GameData game) throws DataAccessException;
     public void updateGame(GameData game) ;
-    public void deleteGame(int id);
     public void clear();
     public boolean getGameByname(String name) throws DataAccessException;
 }
