@@ -25,17 +25,17 @@ public class GameService {
         this.authTokenDAO = authTokenDAO;
     }
 
-    void clear() {
+    public void clear() {
         gameDAO.clear();
         authTokenDAO.clear();
     }
 
-    HashSet<GameData> listGames(String authToken) throws DataAccessException {
+    public HashSet<GameData> listGames(String authToken) throws DataAccessException {
         authTokenDAO.getAuthData(authToken); // throws data access exception
         return gameDAO.listGames();
     }
 
-    int createGame(String authToken, String gameName) throws DataAccessException {
+    public int createGame(String authToken, String gameName) throws DataAccessException {
         authTokenDAO.getAuthData(authToken); // throws data access exception
         if (gameDAO.getGameByname(gameName)){
             throw new DataAccessException("Game already exists");
@@ -47,7 +47,7 @@ public class GameService {
         return new_gameID;
     }
 
-    void joinGame(String authToken, int gameID, String Color) throws DataAccessException {
+    public void joinGame(String authToken, int gameID, String Color) throws DataAccessException {
         GameData game = gameDAO.getGame(gameID); // throws exception if it doesn't exist
         AuthData authData = authTokenDAO.getAuthData(authToken); // throws error as well *kissy face*
         String username = authData.username();
