@@ -80,27 +80,30 @@ public class PieceMoveCalculator {
             }
         }
         for (var col = -1; position.getColumn() + col > 0; col--) {
-            pos = new ChessPosition( position.getRow(), position.getColumn() + col);
-            if (board.getPiece(pos) == null || otherColor(pos)) {
-                ChessMove move = new ChessMove(position, pos, null );
-                possibleMoves.add(move);
-            }
-            if (board.getPiece(pos) != null){
+            if (otherStraights(possibleMoves, col)) {
                 break;
             }
         }
         for (var col = 1; position.getColumn() + col <= 8; col++) {
-            pos = new ChessPosition(position.getRow(), position.getColumn() + col);
-            if (board.getPiece(pos) == null || otherColor(pos)) {
-                ChessMove move = new ChessMove(position, pos, null );
-                possibleMoves.add(move);
-            }
-            if (board.getPiece(pos) != null){
+            if (otherStraights(possibleMoves, col)) {
                 break;
             }
         }
 
         return possibleMoves;
+    }
+
+    private boolean otherStraights(ArrayList<ChessMove> possibleMoves, int col) {
+        ChessPosition pos;
+        pos = new ChessPosition( position.getRow(), position.getColumn() + col);
+        if (board.getPiece(pos) == null || otherColor(pos)) {
+            ChessMove move = new ChessMove(position, pos, null );
+            possibleMoves.add(move);
+        }
+        if (board.getPiece(pos) != null){
+            return true;
+        }
+        return false;
     }
 
     private boolean straights(ArrayList<ChessMove> possibleMoves, int row) {
@@ -185,10 +188,7 @@ public class PieceMoveCalculator {
 
         if (board.getPiece(pos) == null) {
             if (position.getRow() == endRow) {
-                possibleMoves.add(new ChessMove(position, pos, ChessPiece.PieceType.QUEEN));
-                possibleMoves.add(new ChessMove(position, pos, ChessPiece.PieceType.BISHOP));
-                possibleMoves.add(new ChessMove(position, pos, ChessPiece.PieceType.ROOK));
-                possibleMoves.add(new ChessMove(position, pos, ChessPiece.PieceType.KNIGHT));
+                promotionMove(possibleMoves, pos);
             } else {
                 possibleMoves.add(new ChessMove(position, pos, null));
             }
@@ -201,31 +201,29 @@ public class PieceMoveCalculator {
             }
         }
         pos = new ChessPosition(position.getRow() + modifier1, position.getColumn() + 1);
+        exists(opposite, endRow, possibleMoves, pos, promotion);
+        pos = new ChessPosition(position.getRow() + modifier1, position.getColumn() - 1);
+        exists(opposite, endRow, possibleMoves, pos, promotion);
+        return possibleMoves;
+
+    }
+
+    private void exists(ChessGame.TeamColor opposite, int endRow, ArrayList<ChessMove> possibleMoves, ChessPosition pos, ChessPiece.PieceType promotion) {
         if (inBounds(pos) && board.getPiece(pos) != null && board.getPiece(pos).getTeamColor() == opposite) {
             if (position.getRow() == endRow) {
-                possibleMoves.add(new ChessMove(position, pos, ChessPiece.PieceType.QUEEN));
-                possibleMoves.add(new ChessMove(position, pos, ChessPiece.PieceType.BISHOP));
-                possibleMoves.add(new ChessMove(position, pos, ChessPiece.PieceType.ROOK));
-                possibleMoves.add(new ChessMove(position, pos, ChessPiece.PieceType.KNIGHT));
+                promotionMove(possibleMoves, pos);
             } else {
                 possibleMoves.add(new ChessMove(position, pos, promotion));
             }
 
         }
-        pos = new ChessPosition(position.getRow() + modifier1, position.getColumn() - 1);
-        if (inBounds(pos) && board.getPiece(pos) != null && board.getPiece(pos).getTeamColor() == opposite){
-            if (position.getRow() == endRow) {
-                possibleMoves.add(new ChessMove(position, pos, ChessPiece.PieceType.QUEEN));
-                possibleMoves.add(new ChessMove(position, pos, ChessPiece.PieceType.BISHOP));
-                possibleMoves.add(new ChessMove(position, pos, ChessPiece.PieceType.ROOK));
-                possibleMoves.add(new ChessMove(position, pos, ChessPiece.PieceType.KNIGHT));
-            }
-            else{
-                possibleMoves.add(new ChessMove(position, pos, promotion ));
-            }
-        }
-        return possibleMoves;
+    }
 
+    private void promotionMove(ArrayList<ChessMove> possibleMoves, ChessPosition pos) {
+        possibleMoves.add(new ChessMove(position, pos, ChessPiece.PieceType.QUEEN));
+        possibleMoves.add(new ChessMove(position, pos, ChessPiece.PieceType.BISHOP));
+        possibleMoves.add(new ChessMove(position, pos, ChessPiece.PieceType.ROOK));
+        possibleMoves.add(new ChessMove(position, pos, ChessPiece.PieceType.KNIGHT));
     }
 
     public ArrayList<ChessMove> knightMoves(){
