@@ -83,26 +83,26 @@ public class GameHandler {
             res.status(500);
             return "{\"message\": \"Error: " + e.getMessage() + "\" }";
         }
-        GameID ID = new GameID(gameID);
+        GameID id = new GameID(gameID);
         res.status(200);
-        return new Gson().toJson(ID); // turn to Json the game ID
+        return new Gson().toJson(id); // turn to Json the game ID
     }
 
     public Object joinGame(Request req, Response res) {
         String authToken;
-        int ID;
-        String Color;
-        GameRequest color_id;
+        int id;
+        String color;
+        GameRequest colorId;
         try {
             authToken = new Gson().fromJson(req.headers("authorization"), String.class);
-            color_id = new Gson().fromJson(req.body(), GameRequest.class);
-            Color = color_id.playerColor();
-            ID = color_id.gameID();
+            colorId = new Gson().fromJson(req.body(), GameRequest.class);
+            color = colorId.playerColor();
+            id = colorId.gameID();
         } catch (JsonSyntaxException e) {
             res.status(401);
             return "{\"message\": \"Error: Invalid request\" }";
         } try{
-            gameService.joinGame(authToken, ID, Color);
+            gameService.joinGame(authToken, id, color);
         }catch (InvalidInput e){
             res.status(400);
             return "{\"message\": \"Error: Forbidden\" }";

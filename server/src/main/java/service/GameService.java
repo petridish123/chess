@@ -40,14 +40,14 @@ public class GameService {
         if (gameDAO.getGameByname(gameName)){
             throw new DataAccessException("Game already exists");
         } // if the game exists, return
-        int new_gameID = this.listGames(authToken).size()+1;
-        ChessGame new_chess_game = new ChessGame(); // sets up a new board
-        GameData new_game = new GameData(new_gameID, gameName, new_chess_game);
-        gameDAO.createGame(new_game); // When implementing the SQL version, make sure to throw the exception in the DAO
-        return new_gameID;
+        int newGameID = this.listGames(authToken).size()+1;
+        ChessGame newChessGame = new ChessGame(); // sets up a new board
+        GameData newGame = new GameData(newGameID, gameName, newChessGame);
+        gameDAO.createGame(newGame); // When implementing the SQL version, make sure to throw the exception in the DAO
+        return newGameID;
     }
 
-    public void joinGame(String authToken, int gameID, String Color) throws DataAccessException {
+    public void joinGame(String authToken, int gameID, String color) throws DataAccessException {
         GameData game = gameDAO.getGame(gameID); // throws exception if it doesn't exist
         AuthData authData = authTokenDAO.getAuthData(authToken); // throws error as well *kissy face*
         String username = authData.username();
@@ -57,7 +57,7 @@ public class GameService {
         ChessGame chessGame = game.game();
         String gameName = game.gameName();
 
-        if (Objects.equals(Color, "WHITE")){
+        if (Objects.equals(color, "WHITE")){
             if (Objects.equals(game.whiteUsername(), null)||game.whiteUsername().isEmpty()){
                 whiteUser = username;
             }
@@ -65,7 +65,7 @@ public class GameService {
                 throw new UnAuthorizedException("White username already exists");
             }
         }
-        else if (Objects.equals(Color, "BLACK")){
+        else if (Objects.equals(color, "BLACK")){
             if (Objects.equals(game.blackUsername(), null)||game.blackUsername().isEmpty()){
                 blackUser = username;
             }

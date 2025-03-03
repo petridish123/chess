@@ -94,10 +94,10 @@ public class ChessGame {
         }
         board.addPiece(move.getEndPosition(), piece);
         board.addPiece(move.getStartPosition(), null);
-        setTeamTurn(OppositeTeamColor(teamColorTurn)); // get valid moves and check that first
+        setTeamTurn(oppositeTeamColor(teamColorTurn)); // get valid moves and check that first
     }
 
-    public TeamColor OppositeTeamColor(TeamColor teamColor) {
+    public TeamColor oppositeTeamColor(TeamColor teamColor) {
         return teamColor == TeamColor.WHITE ? TeamColor.BLACK : TeamColor.WHITE;
     }
     /**
@@ -114,7 +114,7 @@ public class ChessGame {
                 piece = board.getPiece(pos);
                 if (piece != null && piece.getTeamColor() != teamColor) {
                     for (ChessMove move : piece.pieceMoves(board, pos)) {
-                        if (KingFound(move)) {
+                        if (kingFound(move)) {
                             return true;
                         }
                     }
@@ -124,7 +124,7 @@ public class ChessGame {
         return false;
     }
 
-    public boolean KingFound(ChessMove move) {
+    public boolean kingFound(ChessMove move) {
         return board.getPiece(move.getEndPosition()) != null && board.getPiece(move.getEndPosition()).getPieceType() == ChessPiece.PieceType.KING;
     }
 
