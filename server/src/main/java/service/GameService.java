@@ -58,20 +58,22 @@ public class GameService {
         String gameName = game.gameName();
 
         if (Objects.equals(Color, "WHITE")){
-            if (game.whiteUsername().isEmpty()){
+            if (Objects.equals(game.whiteUsername(), null)||game.whiteUsername().isEmpty()){
                 whiteUser = username;
             }
             else{
-                throw new DataAccessException("White username already exists");
+                throw new UnAuthorizedException("White username already exists");
             }
         }
         else if (Objects.equals(Color, "BLACK")){
-            if (game.blackUsername().isEmpty()){
+            if (Objects.equals(game.blackUsername(), null)||game.blackUsername().isEmpty()){
                 blackUser = username;
             }
             else{
-                throw new DataAccessException("Black username already exists");
+                throw new UnAuthorizedException("Black username already exists");
             }
+        } else{
+            throw new InvalidInput("Not a valid color");
         }
         GameData new_game = new GameData(gameID, gameName,game.game(), whiteUser, blackUser );
         gameDAO.updateGame(new_game);

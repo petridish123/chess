@@ -1,6 +1,7 @@
 package server;
 
 
+import com.google.gson.JsonSyntaxException;
 import dataaccess.UnAuthorizedException;
 import model.AuthData;
 import model.UserData;
@@ -10,6 +11,9 @@ import model.GameData;
 import spark.Response;
 import spark.Request;
 import com.google.gson.Gson;
+
+import java.util.Objects;
+
 /*
 Register
 Login
@@ -25,7 +29,7 @@ public class UserHandler {
 
     public Object register(Request req, Response res) {
         UserData user = new Gson().fromJson(req.body(), UserData.class);
-        if (user.username().isEmpty() || user.password().isEmpty()) {
+        if (user.equals(null) ||Objects.equals(user.username(),null) || user.username().isEmpty() || Objects.equals(user.password(),null) ||user.password().isEmpty()) {
             res.status(400);
             return "{\"message\": \"Error: Bad Request\"}";
         }
@@ -49,7 +53,7 @@ public class UserHandler {
 
     public Object login(Request req, Response res) {
         UserData user = new Gson().fromJson(req.body(), UserData.class);
-        if (user.username().isEmpty() || user.password().isEmpty()) {
+        if (Objects.equals(user.username(),null) || user.username().isEmpty() || Objects.equals(user.password(),null) ||user.password().isEmpty()) {
             res.status(400);
             return "{\"message\": \"Error: Bad Request\"}";
         }
@@ -69,10 +73,15 @@ public class UserHandler {
     }
 
     public Object logout(Request req, Response res) {
-        AuthData authData = new Gson().fromJson(req.headers("authorization"), AuthData.class);
-
+        String authData;
+        try {
+            authData = new Gson().fromJson(req.headers("authorization"), String.class);
+        } catch (JsonSyntaxException e) {
+            res.status(400);
+            return "{\"message\": \"Error: No Authorization\"}";
+        }
         try{
-            userService.logoutUser(authData.authToken());
+            userService.logoutUser(authData);
         }catch (DataAccessException e){
             res.status(401);
             return "{\"message\": \"Error: unauthorized\"}";

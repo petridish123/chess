@@ -34,6 +34,13 @@ public class Server {
         //This line initializes the server and can be removed once you have a functioning endpoint
 
         Spark.delete("/db", this::clear);
+        Spark.post("/user", this.userHandler::register);
+        Spark.post("/session", this.userHandler::login);
+        Spark.delete("/session", this.userHandler::logout);
+        Spark.get("/game", this.gameHandler::listGames);
+        Spark.post("/game", this.gameHandler::createGame);
+        Spark.put("/game", this.gameHandler::joinGame);
+
 
         Spark.awaitInitialization();
         return Spark.port();
