@@ -113,19 +113,24 @@ public class ChessGame {
                 ChessPosition pos= new ChessPosition(i, j);
                 piece = board.getPiece(pos);
                 if (piece != null && piece.getTeamColor() != teamColor) {
-                    for (ChessMove move : piece.pieceMoves(board, pos)) {
-                        if (kingFound(move)) {
+                    
+                        if (kingFound(piece.pieceMoves(board, pos))) {
                             return true;
                         }
-                    }
+
                 }
             }
         }
         return false;
     }
 
-    public boolean kingFound(ChessMove move) {
-        return board.getPiece(move.getEndPosition()) != null && board.getPiece(move.getEndPosition()).getPieceType() == ChessPiece.PieceType.KING;
+    public boolean kingFound(Collection<ChessMove> moves) {
+        for (ChessMove move : moves) {
+            if (board.getPiece(move.getEndPosition()) != null && board.getPiece(move.getEndPosition()).getPieceType() == ChessPiece.PieceType.KING){
+                return true;
+            }
+        }
+        return false;
     }
 
     Collection<ChessMove> getTeamMoves(TeamColor teamColor) {
