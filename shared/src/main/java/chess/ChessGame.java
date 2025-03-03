@@ -165,7 +165,9 @@ public class ChessGame {
                 }
             }
         }
-        else mate = false;
+        else{
+            mate = false;
+        }
         return mate;
     }
 

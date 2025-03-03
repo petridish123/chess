@@ -29,7 +29,7 @@ public class UserHandler {
 
     public Object register(Request req, Response res) {
         UserData user = new Gson().fromJson(req.body(), UserData.class);
-        if (user.equals(null) ||Objects.equals(user.username(),null) || user.username().isEmpty() || Objects.equals(user.password(),null) ||user.password().isEmpty()) {
+        if (user == null||Objects.equals(user.username(),null)||Objects.equals(user.password(),null)){
             res.status(400);
             return "{\"message\": \"Error: Bad Request\"}";
         }

@@ -75,7 +75,9 @@ public class PieceMoveCalculator {
                 ChessMove move = new ChessMove(position, pos, null );
                 possibleMoves.add(move);
             }
-            if (board.getPiece(pos) != null) break;
+            if (board.getPiece(pos) != null){
+                break;
+            }
         }
         for (var row = +1; position.getRow() + row <= 8; row++) {
             pos = new ChessPosition(position.getRow() + row, position.getColumn());
@@ -83,7 +85,9 @@ public class PieceMoveCalculator {
                 ChessMove move = new ChessMove(position, pos, null );
                 possibleMoves.add(move);
             }
-            if (board.getPiece(pos) != null) break;
+            if (board.getPiece(pos) != null){
+                break;
+            }
         }
         for (var col = -1; position.getColumn() + col > 0; col--) {
             pos = new ChessPosition( position.getRow(), position.getColumn() + col);
@@ -91,7 +95,9 @@ public class PieceMoveCalculator {
                 ChessMove move = new ChessMove(position, pos, null );
                 possibleMoves.add(move);
             }
-            if (board.getPiece(pos) != null) break;
+            if (board.getPiece(pos) != null){
+                break;
+            }
         }
         for (var col = 1; position.getColumn() + col <= 8; col++) {
             pos = new ChessPosition(position.getRow(), position.getColumn() + col);
@@ -99,7 +105,9 @@ public class PieceMoveCalculator {
                 ChessMove move = new ChessMove(position, pos, null );
                 possibleMoves.add(move);
             }
-            if (board.getPiece(pos) != null) break;
+            if (board.getPiece(pos) != null){
+                break;
+            }
         }
 
         return possibleMoves;
@@ -143,8 +151,7 @@ public class PieceMoveCalculator {
             ChessMove move = new ChessMove(position, pos, null );
             possibleMoves.add(move);
         }
-        if (board.getPiece(pos) != null) return true;
-        return false;
+        return board.getPiece(pos) != null;
     }
 
     public ArrayList<ChessMove> queenMovesCalculator(){
@@ -222,6 +229,7 @@ public class PieceMoveCalculator {
         ArrayList<ChessMove> possibleMoves = new ArrayList<>();
         ArrayList<ChessPosition> positions = new ArrayList<>();
         // knight moves in an L in 8 directions GAH!
+
         positions.add(new ChessPosition(position.getRow() + 2, position.getColumn() - 1));
         positions.add(new ChessPosition(position.getRow() + 2, position.getColumn() + 1));
         positions.add(new ChessPosition(position.getRow() - 2, position.getColumn() + 1));
