@@ -1,8 +1,28 @@
 package server;
 
+import dataaccess.*;
+import service.GameService;
+import service.UserService;
 import spark.*;
 
 public class Server {
+    UserService userService;
+    GameService gameService;
+    UserDataAccess userDAO;
+    AuthTokenDataAccess authTokenDAO;
+    GameDataAccess gameDAO;
+    GameHandler gameHandler;
+    UserHandler userHandler;
+    public Server() {
+        this.gameDAO = new MemoryGameDAO(); // Change these
+        this.authTokenDAO = new MemoryAuthTokenDAO();
+        this.userDAO = new MemoryUserDAO();
+        this.userService = new UserService( userDAO, authTokenDAO);
+        this.gameService = new GameService( gameDAO, authTokenDAO);
+        this.gameHandler = new GameHandler(this.gameService);
+        this.userHandler = new UserHandler(this.userService);
+
+    }
 
     public int run(int desiredPort) {
         Spark.port(desiredPort);
@@ -11,8 +31,9 @@ public class Server {
 
         // Register your endpoints and handle exceptions here.
 
-        //This line initializes the server and can be removed once you have a functioning endpoint 
-        Spark.init();
+        //This line initializes the server and can be removed once you have a functioning endpoint
+
+        Spark.delete("/db", this::clear);
 
         Spark.awaitInitialization();
         return Spark.port();
@@ -21,5 +42,12 @@ public class Server {
     public void stop() {
         Spark.stop();
         Spark.awaitStop();
+    }
+
+    public Object clear(Request req, Response res) {
+        this.gameService.clear();
+        this.userService.clear();
+        res.status(200);
+        return "{}";
     }
 }
