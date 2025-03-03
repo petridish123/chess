@@ -7,14 +7,14 @@ import spark.Response;
 import spark.Request;
 import com.google.gson.Gson;
 import java.util.HashSet;
-import com.google.gson.reflect.TypeToken;
+
 /*
  *Handle the errors
  * request objects and response objects
  *
  * list games ✅
  * create game✅💋💋💋💋💋💋💋💋💋💋💋💋💋💋
- * join game
+ * join game  ✅
  */
 
 public class GameHandler {
@@ -25,9 +25,7 @@ public class GameHandler {
     }
 
     public Object listGames(Request req, Response res) {
-        Gson gson = new Gson();
-        TypeToken<HashSet<GameData>> typeToken = new TypeToken<HashSet<GameData>>() {};
-        HashSet<GameData> games = gson.fromJson(req.body(), typeToken.getType());
+
 
         String authToken = new Gson().fromJson(req.headers("Authorization"), String.class);
         HashSet<GameData> gameSet;
@@ -45,7 +43,7 @@ public class GameHandler {
 
 
         res.status(200);
-        return gson.toJson(gameSet);
+        return new Gson().toJson(gameSet);
     }
 
     public Object createGame(Request req, Response res) {
@@ -73,10 +71,27 @@ public class GameHandler {
     }
 
     public Object joinGame(Request req, Response res) {
+        String authToken = new Gson().fromJson(req.headers("Authorization"), String.class);
+        GameData id_color = new Gson().fromJson(req.body(), GameData.class);
 
+        if (id_color== null || id_color.whiteUsername().isEmpty()) {
+            res.status(400);
+            return "{\"message\": \"Error: Bad Request\"}";
+        }
+        try{
+            gameService.joinGame(authToken, id_color.gameID(), id_color.whiteUsername());
+        }
+        catch (DataAccessException e) {
+            res.status(401);
+            return "{\"message\": \"Error: Unauthorized\" }";
+        }
+        catch (Exception e) {
+            res.status(500);
+            return "{\"message\": \"Error: " + e.getMessage() + "\" }";
+        }
 
-
-        return "CRINGE";
+        res.status(200);
+        return "{}";
     }
 
 }

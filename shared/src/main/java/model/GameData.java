@@ -21,7 +21,10 @@ public record GameData(int gameID, String gameName,  ChessGame game, String whit
 //        this.game = game;
 //        this.whiteUsername = "";
 //        this.blackUsername = "";
+    }
 
+    public GameData(int gameID, String whiteUsername){
+        this(gameID, null, null, whiteUsername, null);
     }
 
 
