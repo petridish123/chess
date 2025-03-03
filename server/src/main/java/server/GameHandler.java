@@ -40,7 +40,7 @@ public class GameHandler {
         }
         catch (Exception e) {
             res.status(500);
-            return "{\"message\": \"Error: " + e.getMessage() + "\" }";
+            return "{\"message\": \"Error: \uD83D\uDC8B\uD83D\uDC8B\uD83D\uDC8B\" }";
         }
 
 
@@ -70,6 +70,13 @@ public class GameHandler {
         }
         res.status(200);
         return new Gson().toJson(gameID); // turn to Json the game ID
+    }
+
+    public Object joinGame(Request req, Response res) {
+
+
+
+        return "CRINGE";
     }
 
 }
