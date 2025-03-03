@@ -68,9 +68,9 @@ public class ChessGame {
 
         ChessBoard boardy = this.board.clone();
         // make move and check if in check
-        ChessPiece piece = board.getPiece(move.getStartPosition());
+        ChessPiece piece = board.getPiece(move.getStartPos());
         board.addPiece(move.getEndPosition(), piece);
-        board.addPiece(move.getStartPosition(), null);
+        board.addPiece(move.getStartPos(), null);
         boolean check = !isInCheck(piece.getTeamColor());
         board = boardy;
         return check;
@@ -83,8 +83,8 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
-        ChessPiece piece = board.getPiece(move.getStartPosition());
-        Collection<ChessMove> moves = validMoves(move.getStartPosition());
+        ChessPiece piece = board.getPiece(move.getStartPos());
+        Collection<ChessMove> moves = validMoves(move.getStartPos());
         if (piece == null || !moves.contains(move) || teamColorTurn != piece.getTeamColor()) {
             throw new InvalidMoveException();
         }
@@ -93,7 +93,7 @@ public class ChessGame {
             piece = new ChessPiece(piece.getTeamColor(), move.getPromotionPiece());
         }
         board.addPiece(move.getEndPosition(), piece);
-        board.addPiece(move.getStartPosition(), null);
+        board.addPiece(move.getStartPos(), null);
         setTeamTurn(oppositeTeamColor(teamColorTurn)); // get valid moves and check that first
     }
 
