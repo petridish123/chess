@@ -53,7 +53,7 @@ public class GameHandler {
             return "{\"message\": \"Error: Bad Request\"}";
         }
         GameData game = new Gson().fromJson(req.body(), GameData.class);
-        String authToken = new Gson().fromJson(req.headers("Authorization"), String.class);
+        String authToken = new Gson().fromJson(req.headers("authorization"), String.class);
         int gameID;
         try {
             gameID = gameService.createGame(authToken, game.gameName());

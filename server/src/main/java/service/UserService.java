@@ -23,18 +23,19 @@ public class UserService {
         this.authTokenDAO = authTokenDAO;
     }
 
-    AuthData registerUser(UserData user) throws DataAccessException {
+    public AuthData registerUser(UserData user) throws DataAccessException {
 
         userDAO.createUser(user); // can throw a data access exception when the user is already in the DB
 
         var authToken = UUID.randomUUID().toString();
         var auth = new AuthData(authToken, user.username());
+
         authTokenDAO.insertAuthData(auth); // can also throw an exception
 
         return auth;
     }
 
-    AuthData loginUser(UserData user) throws DataAccessException { // receives only username and password
+    public AuthData loginUser(UserData user) throws DataAccessException { // receives only username and password
         /**
          * @user takes in only password and username to check the DB
          */
@@ -44,16 +45,27 @@ public class UserService {
         }
         var authToken = UUID.randomUUID().toString();
         var auth = new AuthData(authToken, user.username());
-        authTokenDAO.insertAuthData(auth); // throws exception "already taken"
+        boolean taken = false;
+        do {
+            try {
+                taken = false;
+                authTokenDAO.insertAuthData(auth); // throws exception "already taken"
+            }catch (DataAccessException dae) {
+                taken = true;
+            }
+
+
+        }while (taken);
+
         return auth;
     }
 
-    void logoutUser(String authToken) throws DataAccessException {
+    public void logoutUser(String authToken) throws DataAccessException {
         var token = authTokenDAO.getAuthData(authToken); // does not exist
         authTokenDAO.deleteAuthData(token.authToken());
     }
 
-    void clear(){
+    public void clear(){
         authTokenDAO.clear();
         userDAO.clear();
     }
