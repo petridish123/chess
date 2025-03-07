@@ -35,6 +35,7 @@ public class MySqlGameDAO implements GameDataAccess{
             throw new RuntimeException("unable to process db.properties. " + ex.getMessage());
         }
     }
+
     public MySqlGameDAO() throws DataAccessException {
         try {
             var statement = "CREATE DATABASE IF NOT EXISTS " + DATABASE_NAME;
