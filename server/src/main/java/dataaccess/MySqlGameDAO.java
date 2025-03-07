@@ -3,9 +3,13 @@ package dataaccess;
 import model.GameData;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Properties;
 
+/**
+ * This class will implement mySQL into each of the DAO functions :)
+ */
 public class MySqlGameDAO implements GameDataAccess{
     private static final String DATABASE_NAME;
     private static final String USER;
@@ -46,15 +50,15 @@ public class MySqlGameDAO implements GameDataAccess{
     static Connection getConnection() throws DataAccessException {
         try {
             var conn = DriverManager.getConnection(CONNECTION_URL, USER, PASSWORD);
-            conn.setCatalog(DATABASE_NAME);
+            conn.setCatalog(DATABASE_NAME); //connects to my database
             return conn;
         } catch (SQLException e) {
-            throw new DataAccessException(e.getMessage());
+            throw new DataAccessException(e.getMessage()); // tells me if a connection has been made
         }
     }
 
     @Override
-    public HashSet<GameData> listGames() {
+    public ArrayList<GameData> listGames() {
         return null;
     }
 

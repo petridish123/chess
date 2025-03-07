@@ -2,6 +2,8 @@ package service;
 
 import model.*;
 import dataaccess.*;
+
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Objects;
 
@@ -30,7 +32,7 @@ public class GameService {
         authTokenDAO.clear();
     }
 
-    public HashSet<GameData> listGames(String authToken) throws DataAccessException {
+    public ArrayList<GameData> listGames(String authToken) throws DataAccessException {
         authTokenDAO.getAuthData(authToken); // throws data access exception
         return gameDAO.listGames();
     }

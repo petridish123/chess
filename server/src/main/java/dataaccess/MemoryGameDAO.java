@@ -2,18 +2,19 @@ package dataaccess;
 
 import model.GameData;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 
 
 public class MemoryGameDAO implements GameDataAccess{
-    public HashSet<GameData> database;
+    public ArrayList<GameData> database;
 
     public MemoryGameDAO() {
-        database = new HashSet<GameData>();
+        database = new ArrayList<GameData>();
     }
 
     @Override
-    public HashSet<GameData> listGames() {
+    public ArrayList<GameData> listGames() {
         return database;
     }
 

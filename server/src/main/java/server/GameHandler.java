@@ -9,6 +9,8 @@ import service.GameService;
 import spark.Response;
 import spark.Request;
 import com.google.gson.Gson;
+
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Objects;
 
@@ -32,7 +34,7 @@ public class GameHandler {
 
 
         String authToken = new Gson().fromJson(req.headers("authorization"), String.class);
-        HashSet<GameData> gameSet;
+        ArrayList<GameData> gameSet;
         try {
             gameSet = gameService.listGames(authToken);
         }
