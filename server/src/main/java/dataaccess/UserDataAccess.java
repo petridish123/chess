@@ -8,7 +8,7 @@ public interface UserDataAccess {
 
     void createUser(UserData user) throws DataAccessException;
 
-
+    boolean authenticate(String username, String password) throws DataAccessException;
 
     void clear() throws DataAccessException;
 

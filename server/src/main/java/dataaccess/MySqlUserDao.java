@@ -1,6 +1,7 @@
 package dataaccess;
 
 import model.UserData;
+import org.mindrot.jbcrypt.BCrypt;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -8,6 +9,7 @@ import java.sql.SQLException;
 import java.util.Properties;
 
 public class MySqlUserDao implements UserDataAccess {
+    private final String salt = BCrypt.gensalt(12);
     private static final String DATABASE_NAME;
     private static final String USER;
     private static final String PASSWORD;
@@ -81,7 +83,7 @@ public class MySqlUserDao implements UserDataAccess {
                 try (var resultSet = preparedStatement.executeQuery()) {
                     if (resultSet.next()) {
                         String email = resultSet.getString("email");
-                        String password = resultSet.getString("password");
+                        String password = (resultSet.getString("password"));
                         return new UserData(username, password, email);
                     }
                 }
@@ -98,14 +100,20 @@ public class MySqlUserDao implements UserDataAccess {
         var statement = "INSERT INTO users (username, password, email) VALUES (?, ?, ?)";
         try (var conn = getConnection()){
             try (var preparedStatement = conn.prepareStatement(statement)) {
+                var password = BCrypt.hashpw(user.password(),this.salt);
                 preparedStatement.setString(1, user.username());
-                preparedStatement.setString(2, user.password());
+                preparedStatement.setString(2, password);
                 preparedStatement.setString(3, user.email());
                 preparedStatement.executeUpdate();
             }
         } catch (SQLException e){
             throw new DataAccessException("User already exists");
         }
+    }
+
+    @Override
+    public boolean authenticate(String username, String password) throws DataAccessException {
+        return BCrypt.checkpw(password, this.getUserData(username).password());
     }
 
     @Override

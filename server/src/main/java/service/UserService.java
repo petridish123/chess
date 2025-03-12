@@ -2,6 +2,8 @@ package service;
 
 import dataaccess.*;
 import model.*;
+import org.mindrot.jbcrypt.BCrypt;
+
 import java.util.UUID;
 
 /*
@@ -40,7 +42,8 @@ public class UserService {
          * @user takes in only password and username to check the DB
          */
         UserData potentialUser = userDAO.getUserData(user.username());// throws DataAccessException "no user"
-        if (!potentialUser.password().equals(user.password())) { // Finds the user based on username and then checks password
+
+        if (!userDAO.authenticate(potentialUser.username(),user.password())) { // Finds the user based on username and then checks password  potentialUser.password().equals(user.password())
             throw new DataAccessException("Wrong password");
         }
         var authToken = UUID.randomUUID().toString();

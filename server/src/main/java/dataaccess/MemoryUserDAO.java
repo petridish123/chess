@@ -35,6 +35,10 @@ public class MemoryUserDAO implements UserDataAccess{
 
     }
 
+    @Override
+    public boolean authenticate(String username, String password) throws DataAccessException {
+        return this.getUserData(username).password().equals(password);
+    }
 
 
     @Override
