@@ -59,7 +59,30 @@ public class DataaccessTests {
     @Test
     void testGetGame() throws DataAccessException {}
 
+    @Test
+    void testUpdateGame() throws DataAccessException {}
 
+    @Test
+    void testDeleteGame() throws DataAccessException {}
 
+    @Test
+    void NEGtestCreateGame() throws DataAccessException {}
 
+    @Test
+    void NEGtestJoin() throws DataAccessException {}
+
+    @Test
+    void NEGtestListGames() throws DataAccessException {}
+
+    @Test
+    void NEGtestGetGame() throws DataAccessException {}
+
+    @Test
+    void NEGtestUpdateGame() throws DataAccessException {}
+
+    @Test
+    void NEGtestDeleteGame() throws DataAccessException {}
+
+    @Test
+    void clearDB() throws DataAccessException {}
 }

@@ -10,75 +10,13 @@ import java.util.Objects;
 import java.util.Properties;
 
 public class MySqlUserDao implements UserDataAccess {
-    private final String salt = BCrypt.gensalt(12);
-    private static final String DATABASE_NAME;
-    private static final String USER;
-    private static final String PASSWORD;
-    private static final String CONNECTION_URL;
-    static {
-        try {
-            try (var propStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("db.properties")) {
-                if (propStream == null) {
-                    throw new Exception("Unable to load db.properties");
-                }
-                Properties props = new Properties();
-                props.load(propStream);
-                DATABASE_NAME = props.getProperty("db.name");
-                USER = props.getProperty("db.user");
-                PASSWORD = props.getProperty("db.password");
+    private final String SALT = BCrypt.gensalt(12);
 
-                var host = props.getProperty("db.host");
-                var port = Integer.parseInt(props.getProperty("db.port"));
-                CONNECTION_URL = String.format("jdbc:mysql://%s:%d", host, port);
-            }
-        } catch (Exception ex) {
-            throw new RuntimeException("unable to process db.properties. " + ex.getMessage());
-        }
-    }
-
-
-    public MySqlUserDao() throws DataAccessException {
-        try {
-            var statement = "CREATE DATABASE IF NOT EXISTS " + DATABASE_NAME; // also create table games
-            var conn = getConnection();
-            try (var preparedStatement = conn.prepareStatement(statement)) {
-                preparedStatement.executeUpdate();
-            }
-        } catch (SQLException e) {
-            throw new DataAccessException(e.getMessage());
-        }
-        try { // creates my table
-            var statement =    """ 
-                        CREATE TABLE IF NOT EXISTS users (
-                            username varchar(255),
-                            password varchar(255),
-                            email varchar(255),
-                
-                            PRIMARY KEY (username)
-                        )"""; // creates the table
-            var conn = getConnection();
-            try (var preparedStatement = conn.prepareStatement(statement)) {
-                preparedStatement.executeUpdate();
-            }
-        }   catch (SQLException e){
-            throw new DataAccessException(e.getMessage());
-        }
-    }
-
-    static Connection getConnection() throws DataAccessException {
-        try {
-            var conn = DriverManager.getConnection(CONNECTION_URL, USER, PASSWORD);
-            conn.setCatalog(DATABASE_NAME); //connects to my database
-            return conn;
-        } catch (SQLException e) {
-            throw new DataAccessException(e.getMessage()); // tells me if a connection has been made
-        }
-    }
 
     @Override
     public UserData getUserData(String username) throws DataAccessException {
         var statement = "SELECT * FROM users WHERE username = ?";
-        try (var conn = getConnection()){
+        try (var conn = DatabaseManager.getConnection();){
             try (var preparedStatement = conn.prepareStatement(statement)) {
                 preparedStatement.setString(1, username);
                 try (var resultSet = preparedStatement.executeQuery()) {
@@ -99,14 +37,14 @@ public class MySqlUserDao implements UserDataAccess {
     @Override
     public void createUser(UserData user) throws DataAccessException {
         var statement = "INSERT INTO users (username, password, email) VALUES (?, ?, ?)";
-        try (var conn = getConnection()){
+        try (var conn = DatabaseManager.getConnection();){
             try (var preparedStatement = conn.prepareStatement(statement)) {
                 var password = "";
                 if (Objects.equals(user.password(), null)){
                     password = "";
                 }
                 else{
-                    password = BCrypt.hashpw(user.password(),this.salt);
+                    password = BCrypt.hashpw(user.password(),this.SALT);
                 }
 
                 preparedStatement.setString(1, user.username());
@@ -127,7 +65,7 @@ public class MySqlUserDao implements UserDataAccess {
     @Override
     public void clear() throws DataAccessException {
         var statement = "TRUNCATE TABLE users";
-        try (var conn = getConnection()){
+        try (var conn = DatabaseManager.getConnection();){
             try (var preparedStatement = conn.prepareStatement(statement)) {
                 preparedStatement.executeUpdate();
             }

@@ -46,6 +46,38 @@ public class DatabaseManager {
         } catch (SQLException e) {
             throw new DataAccessException(e.getMessage());
         }
+        try { // creates my table
+            var statement =    """ 
+                        CREATE TABLE IF NOT EXISTS users (
+                            username varchar(255),
+                            password varchar(255),
+                            email varchar(255),
+                
+                            PRIMARY KEY (username)
+                        )"""; // creates the table
+            var conn = getConnection();
+            try (var preparedStatement = conn.prepareStatement(statement)) {
+                preparedStatement.executeUpdate();
+            }
+        }   catch (SQLException e){
+            throw new DataAccessException(e.getMessage());
+        }
+        try { // creates my table
+            var statement =    """ 
+                        CREATE TABLE IF NOT EXISTS authdata (
+                            username varchar(255) NOT NULL,
+                            authtoken varchar(255) NOT NULL,
+                            PRIMARY KEY (authtoken)
+                        )
+                        """; // creates the table
+            var conn = getConnection();
+            try (var preparedStatement = conn.prepareStatement(statement)) {
+                preparedStatement.executeUpdate();
+            }
+        }   catch (SQLException e){
+            throw new DataAccessException(e.getMessage());
+        }
+
     }
 
     /**

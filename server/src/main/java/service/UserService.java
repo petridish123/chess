@@ -37,13 +37,13 @@ public class UserService {
         return auth;
     }
 
-    public AuthData loginUser(UserData user) throws DataAccessException { // receives only username and password
+    public AuthData loginUser(UserData user) throws DataAccessException {
         /**
          * @user takes in only password and username to check the DB
          */
         UserData potentialUser = userDAO.getUserData(user.username());// throws DataAccessException "no user"
 
-        if (!userDAO.authenticate(potentialUser.username(),user.password())) { // Finds the user based on username and then checks password  potentialUser.password().equals(user.password())
+        if (!userDAO.authenticate(potentialUser.username(),user.password())) {
             throw new DataAccessException("Wrong password");
         }
         var authToken = UUID.randomUUID().toString();
