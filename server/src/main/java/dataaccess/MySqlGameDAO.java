@@ -1,5 +1,7 @@
 package dataaccess;
 
+import chess.ChessGame;
+import com.google.gson.Gson;
 import model.GameData;
 
 import java.sql.*;
@@ -36,14 +38,32 @@ public class MySqlGameDAO implements GameDataAccess{
         }
     }
 
+
     public MySqlGameDAO() throws DataAccessException {
         try {
-            var statement = "CREATE DATABASE IF NOT EXISTS " + DATABASE_NAME;
+            var statement = "CREATE DATABASE IF NOT EXISTS " + DATABASE_NAME; // also create table games
             var conn = DriverManager.getConnection(CONNECTION_URL, USER, PASSWORD);
             try (var preparedStatement = conn.prepareStatement(statement)) {
                 preparedStatement.executeUpdate();
             }
         } catch (SQLException e) {
+            throw new DataAccessException(e.getMessage());
+        }
+        try { // creates my table
+            var statement =    """ 
+                        CREATE TABLE IF NOT EXISTS games (
+                            gameID INT NOT NULL AUTO_INCREMENT,
+                            whiteUsername VARCHAR(255),
+                            blackUsername VARCHAR(255),
+                            chessName VARCHAR(255),
+                            chessGame TEXT,
+                            PRIMARY KEY (gameID)
+                        )"""; // creates the table
+            var conn = DriverManager.getConnection(CONNECTION_URL, USER, PASSWORD);
+            try (var preparedStatement = conn.prepareStatement(statement)) {
+                preparedStatement.executeUpdate();
+            }
+        }   catch (SQLException e){
             throw new DataAccessException(e.getMessage());
         }
     }
@@ -58,33 +78,46 @@ public class MySqlGameDAO implements GameDataAccess{
         }
     }
 
+    /**
+     * TODO: Make get games return the table
+     *
+     */
     @Override
     public ArrayList<GameData> listGames() {
+        return null; // mysql get the table
+    }
+
+    @Override
+    public GameData getGame(int id) throws DataAccessException { // "SELECT whiteUsername, blackUsername, gameName, chessGame FROM game WHERE gameID=?"
         return null;
     }
 
     @Override
-    public GameData getGame(int id) throws DataAccessException {
-        return null;
-    }
-
-    @Override
-    public void createGame(GameData game) throws DataAccessException {
+    public void createGame(GameData game) throws DataAccessException { // "INSERT INTO game (gameID, whiteUsername, blackUsername, gameName, chessGame) VALUES(?, ?, ?, ?, ?)"
 
     }
 
     @Override
-    public void updateGame(GameData game) {
+    public void updateGame(GameData game) { // "UPDATE game SET whiteUsername=?, blackUsername=?, gameName=?, chessGame=? WHERE gameID=?"
 
     }
 
     @Override
-    public void clear() {
+    public void clear() { //"TRUNCATE game"
 
     }
 
     @Override
     public boolean getGameByname(String name) throws DataAccessException {
         return false;
+    }
+
+    // maybe make serializer and deserializer for the game object specifically so I can turn it to a string and then back to an object using GSON
+    String gameSerializer(ChessGame game) {
+        return new Gson().toJson(game);
+    }
+
+    ChessGame gameDeserializer(String game) {
+        return new Gson().fromJson(game, ChessGame.class);
     }
 }
