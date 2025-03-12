@@ -4,6 +4,7 @@ import chess.ChessGame;
 import com.google.gson.Gson;
 import model.GameData;
 
+import javax.xml.crypto.Data;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -111,7 +112,12 @@ public class MySqlGameDAO implements GameDataAccess{
         var statement = "INSERT INTO game (gameID, whiteUsername, blackUsername, gameName, chessGame) VALUES(?, ?, ?, ?, ?)";
         try (var conn = getConnection()){
             try (var preparedStatement = conn.prepareStatement(statement)) {
-                
+                preparedStatement.setInt(1,game.gameID());
+                preparedStatement.setString(2,game.whiteUsername());
+                preparedStatement.setString(3,game.blackUsername());
+                preparedStatement.setString(4,game.gameName());
+                preparedStatement.setString(5, gameSerializer(game.game()));
+                preparedStatement.executeUpdate();
             }
         } catch (SQLException e){
             throw new DataAccessException(e.getMessage());
@@ -119,17 +125,49 @@ public class MySqlGameDAO implements GameDataAccess{
     }
 
     @Override
-    public void updateGame(GameData game) { // "UPDATE game SET whiteUsername=?, blackUsername=?, gameName=?, chessGame=? WHERE gameID=?"
-
+    public void updateGame(GameData game) throws DataAccessException { // "UPDATE game SET whiteUsername=?, blackUsername=?, gameName=?, chessGame=? WHERE gameID=?"
+        var statement = "UPDATE game SET whiteUsername=?, blackUsername=?, gameName=?, chessGame=? WHERE gameID=?";
+        try (var conn = getConnection()){
+            try (var preparedStatement = conn.prepareStatement(statement)) {
+                preparedStatement.setString(1, game.whiteUsername());
+                preparedStatement.setString(2, game.blackUsername());
+                preparedStatement.setString(3, game.gameName());
+                preparedStatement.setString(4, gameSerializer(game.game()));
+                preparedStatement.setInt(5, game.gameID());
+                preparedStatement.executeUpdate(); // maybe add a check
+            }
+        }catch (SQLException | DataAccessException e){
+            throw new DataAccessException(e.getMessage());
+        }
     }
 
     @Override
-    public void clear() { //"TRUNCATE game"
-
+    public void clear() throws DataAccessException { //"TRUNCATE game"
+        var statement = "TRUNCATE TABLE games";
+        try (var conn = getConnection()){
+            try (var preparedStatement = getConnection().prepareStatement(statement)){
+                preparedStatement.executeUpdate();
+            }
+        } catch (SQLException e){
+            throw new DataAccessException(e.getMessage());
+        }
     }
 
     @Override
     public boolean getGameByname(String name) throws DataAccessException {
+        var statement = "SELECT * FROM games WHERE gameName=?";
+        try (var conn = getConnection()){
+            try (var preparedStatement = conn.prepareStatement(statement)){
+                preparedStatement.setString(1, name);
+                try (var result = preparedStatement.executeQuery()){
+                    if (result.next()){
+                        return true;
+                    }
+                }
+            }
+        }catch (SQLException e){
+            return false;
+        }
         return false;
     }
 

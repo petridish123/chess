@@ -10,7 +10,7 @@ public interface GameDataAccess {
     public ArrayList<GameData> listGames();
     public GameData getGame(int id) throws DataAccessException;
     public void createGame(GameData game) throws DataAccessException;
-    public void updateGame(GameData game) ;
-    public void clear();
+    public void updateGame(GameData game) throws DataAccessException ;
+    public void clear() throws DataAccessException;
     public boolean getGameByname(String name) throws DataAccessException;
 }
