@@ -77,6 +77,23 @@ public class DatabaseManager {
         }   catch (SQLException e){
             throw new DataAccessException(e.getMessage());
         }
+        try { // creates my table
+            var statement =    """ 
+                        CREATE TABLE IF NOT EXISTS games (
+                            gameID INT NOT NULL AUTO_INCREMENT,
+                            whiteUsername VARCHAR(255),
+                            blackUsername VARCHAR(255),
+                            chessName VARCHAR(255),
+                            chessGame TEXT,
+                            PRIMARY KEY (gameID)
+                        )"""; // creates the table
+            var conn = getConnection();
+            try (var preparedStatement = conn.prepareStatement(statement)) {
+                preparedStatement.executeUpdate();
+            }
+        }   catch (SQLException e){
+            throw new DataAccessException(e.getMessage());
+        }
 
     }
 
