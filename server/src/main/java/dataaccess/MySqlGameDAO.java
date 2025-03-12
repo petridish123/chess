@@ -108,7 +108,14 @@ public class MySqlGameDAO implements GameDataAccess{
 
     @Override
     public void createGame(GameData game) throws DataAccessException { // "INSERT INTO game (gameID, whiteUsername, blackUsername, gameName, chessGame) VALUES(?, ?, ?, ?, ?)"
-
+        var statement = "INSERT INTO game (gameID, whiteUsername, blackUsername, gameName, chessGame) VALUES(?, ?, ?, ?, ?)";
+        try (var conn = getConnection()){
+            try (var preparedStatement = conn.prepareStatement(statement)) {
+                
+            }
+        } catch (SQLException e){
+            throw new DataAccessException(e.getMessage());
+        }
     }
 
     @Override
