@@ -5,7 +5,9 @@ import service.GameService;
 import service.UserService;
 import spark.*;
 
-public class Server {
+import java.sql.SQLException;
+
+public class Server{
     UserService userService;
     GameService gameService;
     UserDataAccess userDAO;
@@ -14,6 +16,11 @@ public class Server {
     GameHandler gameHandler;
     UserHandler userHandler;
     public Server() {
+        try{
+            DatabaseManager.createDatabase();
+        }catch (DataAccessException e){
+            throw new RuntimeException(e);
+        }
         try {
             this.gameDAO = new MySqlGameDAO(); // Change these
             this.authTokenDAO = new MySqlAuthDAO();
@@ -25,9 +32,15 @@ public class Server {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+
+
+
     }
 
+
+
     public int run(int desiredPort) {
+
         Spark.port(desiredPort);
 
         Spark.staticFiles.location("web");

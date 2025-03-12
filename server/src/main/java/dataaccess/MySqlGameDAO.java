@@ -70,13 +70,8 @@ public class MySqlGameDAO implements GameDataAccess{
     }
 
     static Connection getConnection() throws DataAccessException {
-        try {
-            var conn = DriverManager.getConnection(CONNECTION_URL, USER, PASSWORD);
-            conn.setCatalog(DATABASE_NAME); //connects to my database
-            return conn;
-        } catch (SQLException e) {
-            throw new DataAccessException(e.getMessage()); // tells me if a connection has been made
-        }
+        var conn = DatabaseManager.getConnection();
+        return conn;
     }
 
     /**
