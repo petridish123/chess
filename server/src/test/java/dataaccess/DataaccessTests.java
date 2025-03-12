@@ -19,33 +19,18 @@ public class DataaccessTests {
         GAME_SERVICE.clear();
         USER_SERVICE.clear();
     }
-
-    private static final TestUser TEST_USER = new TestUser("ExistingUser", "existingUserPassword", "eu@mail.com");
-
-    private static TestServerFacade serverFacade;
-
     private static Server server;
-
-    private static Class<?> databaseManagerClass;
-
-
     @BeforeAll
-    public static void startServer() {
+    public static void startTestrun() {
         server = new Server();
         var port = server.run(0);
-        System.out.println("Started test HTTP server on " + port);
 
-        serverFacade = new TestServerFacade("localhost", Integer.toString(port));
     }
-
-
 
     @AfterAll
-    static void stopServer() {
+    static void stopServerTests() {
         server.stop();
     }
-
-
 
     @Test
     void testCreateGame() throws DataAccessException {}
@@ -66,23 +51,45 @@ public class DataaccessTests {
     void testDeleteGame() throws DataAccessException {}
 
     @Test
-    void NEGtestCreateGame() throws DataAccessException {}
+    void testCreateGameNEG() throws DataAccessException {}
 
     @Test
-    void NEGtestJoin() throws DataAccessException {}
+    void testJoinNEG() throws DataAccessException {}
 
     @Test
-    void NEGtestListGames() throws DataAccessException {}
+    void testListGamesNEG() throws DataAccessException {}
 
     @Test
-    void NEGtestGetGame() throws DataAccessException {}
+    void testGetGameNEG() throws DataAccessException {}
 
     @Test
-    void NEGtestUpdateGame() throws DataAccessException {}
+    void testUpdateGameNEG() throws DataAccessException {}
 
     @Test
-    void NEGtestDeleteGame() throws DataAccessException {}
+    void testDeleteGameNEG() throws DataAccessException {}
 
     @Test
     void clearDB() throws DataAccessException {}
+
+    @Test
+    void login() throws DataAccessException {}
+
+    @Test void logout() throws DataAccessException {}
+
+    @Test void getUser() throws DataAccessException {}
+
+    @Test void registerUser() throws DataAccessException {}
+
+
+    @Test
+    void loginNEG() throws DataAccessException {}
+
+    @Test void logoutNEG() throws DataAccessException {}
+
+    @Test void getUserNEG() throws DataAccessException {}
+
+    @Test void registerUserNEG() throws DataAccessException {}
+
+
+
 }

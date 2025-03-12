@@ -10,7 +10,7 @@ import java.util.Objects;
 import java.util.Properties;
 
 public class MySqlUserDao implements UserDataAccess {
-    private final String SALT = BCrypt.gensalt(12);
+    private final String sALT = BCrypt.gensalt(12);
 
 
     @Override
@@ -44,7 +44,7 @@ public class MySqlUserDao implements UserDataAccess {
                     password = "";
                 }
                 else{
-                    password = BCrypt.hashpw(user.password(),this.SALT);
+                    password = BCrypt.hashpw(user.password(),this.sALT);
                 }
 
                 preparedStatement.setString(1, user.username());
