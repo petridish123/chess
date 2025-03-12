@@ -38,7 +38,7 @@ public class MySqlAuthDAO implements AuthTokenDataAccess{
     public MySqlAuthDAO() throws DataAccessException {
         try {
             var statement = "CREATE DATABASE IF NOT EXISTS " + DATABASE_NAME; // also create table games
-            var conn = DriverManager.getConnection(CONNECTION_URL, USER, PASSWORD);
+            var conn = getConnection();
             try (var preparedStatement = conn.prepareStatement(statement)) {
                 preparedStatement.executeUpdate();
             }
@@ -48,10 +48,12 @@ public class MySqlAuthDAO implements AuthTokenDataAccess{
         try { // creates my table
             var statement =    """ 
                         CREATE TABLE IF NOT EXISTS authdata (
-                            username varchar(255) PRIMARY KEY,
+                            username varchar(255) NOT NULL,
                             authtoken varchar(255) NOT NULL,
-                        )"""; // creates the table
-            var conn = DriverManager.getConnection(CONNECTION_URL, USER, PASSWORD);
+                            PRIMARY KEY (authtoken)
+                        )
+                        """; // creates the table
+            var conn = getConnection();
             try (var preparedStatement = conn.prepareStatement(statement)) {
                 preparedStatement.executeUpdate();
             }

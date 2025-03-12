@@ -43,7 +43,7 @@ public class MySqlGameDAO implements GameDataAccess{
     public MySqlGameDAO() throws DataAccessException {
         try {
             var statement = "CREATE DATABASE IF NOT EXISTS " + DATABASE_NAME; // also create table games
-            var conn = DriverManager.getConnection(CONNECTION_URL, USER, PASSWORD);
+            var conn = getConnection();
             try (var preparedStatement = conn.prepareStatement(statement)) {
                 preparedStatement.executeUpdate();
             }
@@ -60,7 +60,7 @@ public class MySqlGameDAO implements GameDataAccess{
                             chessGame TEXT,
                             PRIMARY KEY (gameID)
                         )"""; // creates the table
-            var conn = DriverManager.getConnection(CONNECTION_URL, USER, PASSWORD);
+            var conn = getConnection();
             try (var preparedStatement = conn.prepareStatement(statement)) {
                 preparedStatement.executeUpdate();
             }

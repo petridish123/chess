@@ -37,7 +37,7 @@ public class MySqlUserDao implements UserDataAccess {
     public MySqlUserDao() throws DataAccessException {
         try {
             var statement = "CREATE DATABASE IF NOT EXISTS " + DATABASE_NAME; // also create table games
-            var conn = DriverManager.getConnection(CONNECTION_URL, USER, PASSWORD);
+            var conn = getConnection();
             try (var preparedStatement = conn.prepareStatement(statement)) {
                 preparedStatement.executeUpdate();
             }
@@ -47,13 +47,13 @@ public class MySqlUserDao implements UserDataAccess {
         try { // creates my table
             var statement =    """ 
                         CREATE TABLE IF NOT EXISTS users (
-                            username varchar(255) PRIMARY KEY,
-                            password varchar(255) PRIMARY KEY,
+                            username varchar(255),
+                            password varchar(255),
                             email varchar(255),
                             authtoken varchar(255),
                             PRIMARY KEY (username)
                         )"""; // creates the table
-            var conn = DriverManager.getConnection(CONNECTION_URL, USER, PASSWORD);
+            var conn = getConnection();
             try (var preparedStatement = conn.prepareStatement(statement)) {
                 preparedStatement.executeUpdate();
             }
