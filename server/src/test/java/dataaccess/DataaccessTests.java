@@ -1,9 +1,12 @@
 package dataaccess;
 import org.junit.jupiter.api.*;
+import passoff.model.TestUser;
+import passoff.server.TestServerFacade;
+import server.Server;
 import service.GameService;
 import service.UserService;
 
-public class dataaccessTests {
+public class DataaccessTests {
 
     private static final AuthTokenDataAccess AUTH_DAO = new MemoryAuthTokenDAO();
     private static final GameDataAccess GAME_DAO = new MemoryGameDAO();
@@ -16,6 +19,33 @@ public class dataaccessTests {
         GAME_SERVICE.clear();
         USER_SERVICE.clear();
     }
+
+    private static final TestUser TEST_USER = new TestUser("ExistingUser", "existingUserPassword", "eu@mail.com");
+
+    private static TestServerFacade serverFacade;
+
+    private static Server server;
+
+    private static Class<?> databaseManagerClass;
+
+
+    @BeforeAll
+    public static void startServer() {
+        server = new Server();
+        var port = server.run(0);
+        System.out.println("Started test HTTP server on " + port);
+
+        serverFacade = new TestServerFacade("localhost", Integer.toString(port));
+    }
+
+
+
+    @AfterAll
+    static void stopServer() {
+        server.stop();
+    }
+
+
 
     @Test
     void testCreateGame() throws DataAccessException {}
