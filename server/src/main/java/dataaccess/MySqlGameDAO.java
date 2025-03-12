@@ -89,6 +89,23 @@ public class MySqlGameDAO implements GameDataAccess{
 
     @Override
     public GameData getGame(int id) throws DataAccessException { // "SELECT whiteUsername, blackUsername, gameName, chessGame FROM game WHERE gameID=?"
+        var statement = "SELECT * FROM games WHERE gameID=?";
+        try (var conn = getConnection()){
+            try (var preparedStatement = conn.prepareStatement(statement)) {
+                preparedStatement.setInt(1, id);
+                try (var result = preparedStatement.executeQuery()){
+                    var whiteUsername = result.getString(1);
+                    var blackUsername = result.getString(2);
+                    var gameName = result.getString(3);
+                    var chessGame = gameDeserializer(result.getString(4));
+                    return new GameData(id, gameName,chessGame, whiteUsername, blackUsername);
+                }
+            }
+        } catch (SQLException e){
+            throw new DataAccessException(e.getMessage());
+        }
+
+
         return null;
     }
 
