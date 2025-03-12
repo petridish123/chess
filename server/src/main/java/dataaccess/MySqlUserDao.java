@@ -6,6 +6,7 @@ import org.mindrot.jbcrypt.BCrypt;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Objects;
 import java.util.Properties;
 
 public class MySqlUserDao implements UserDataAccess {
@@ -52,7 +53,7 @@ public class MySqlUserDao implements UserDataAccess {
                             username varchar(255),
                             password varchar(255),
                             email varchar(255),
-                            authtoken varchar(255),
+                
                             PRIMARY KEY (username)
                         )"""; // creates the table
             var conn = getConnection();
@@ -100,7 +101,14 @@ public class MySqlUserDao implements UserDataAccess {
         var statement = "INSERT INTO users (username, password, email) VALUES (?, ?, ?)";
         try (var conn = getConnection()){
             try (var preparedStatement = conn.prepareStatement(statement)) {
-                var password = BCrypt.hashpw(user.password(),this.salt);
+                var password = "";
+                if (Objects.equals(user.password(), null)){
+                    password = "";
+                }
+                else{
+                    password = BCrypt.hashpw(user.password(),this.salt);
+                }
+
                 preparedStatement.setString(1, user.username());
                 preparedStatement.setString(2, password);
                 preparedStatement.setString(3, user.email());
