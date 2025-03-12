@@ -112,21 +112,25 @@ public class MySqlGameDAO implements GameDataAccess{
             try (var preparedStatement = conn.prepareStatement(statement)) {
                 preparedStatement.setInt(1, id);
                 try (var result = preparedStatement.executeQuery()){
-                    var whiteUsername = result.getString(1);
-                    var blackUsername = result.getString(2);
-                    var gameName = result.getString(3);
-                    var chessGame = gameDeserializer(result.getString(4));
-                    return new GameData(id, gameName,chessGame, whiteUsername, blackUsername);
+                    if (result.next()) {
+                        var gameID = result.getInt("gameID");
+                        var whiteUsername = result.getString("whiteUsername");
+                        var blackUsername = result.getString("blackUsername");
+                        var gameName = result.getString("chessName");
+                        var chessGame = gameDeserializer(result.getString("chessGame"));
+                        return new GameData(id, gameName, chessGame, whiteUsername, blackUsername);
+                    }
                 }
             }
         } catch (SQLException e){
             throw new DataAccessException(e.getMessage());
         }
+       throw new DataAccessException("unable to find game");
     }
 
     @Override
     public void createGame(GameData game) throws DataAccessException { // "INSERT INTO game (gameID, whiteUsername, blackUsername, gameName, chessGame) VALUES(?, ?, ?, ?, ?)"
-        var statement = "INSERT INTO game (gameID, whiteUsername, blackUsername, gameName, chessGame) VALUES(?, ?, ?, ?, ?)";
+        var statement = "INSERT INTO games (gameID, whiteUsername, blackUsername, chessName, chessGame) VALUES(?, ?, ?, ?, ?)";
         try (var conn = getConnection()){
             try (var preparedStatement = conn.prepareStatement(statement)) {
                 preparedStatement.setInt(1,game.gameID());
@@ -143,7 +147,7 @@ public class MySqlGameDAO implements GameDataAccess{
 
     @Override
     public void updateGame(GameData game) throws DataAccessException { // "UPDATE game SET whiteUsername=?, blackUsername=?, gameName=?, chessGame=? WHERE gameID=?"
-        var statement = "UPDATE game SET whiteUsername=?, blackUsername=?, gameName=?, chessGame=? WHERE gameID=?";
+        var statement = "UPDATE games SET whiteUsername=?, blackUsername=?, chessName=?, chessGame=? WHERE gameID=?";
         try (var conn = getConnection()){
             try (var preparedStatement = conn.prepareStatement(statement)) {
                 preparedStatement.setString(1, game.whiteUsername());
@@ -172,7 +176,7 @@ public class MySqlGameDAO implements GameDataAccess{
 
     @Override
     public boolean getGameByname(String name) throws DataAccessException {
-        var statement = "SELECT * FROM games WHERE gameName=?";
+        var statement = "SELECT * FROM games WHERE chessName=?";
         try (var conn = getConnection()){
             try (var preparedStatement = conn.prepareStatement(statement)){
                 preparedStatement.setString(1, name);

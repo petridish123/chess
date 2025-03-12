@@ -79,7 +79,7 @@ public class GameHandler {
         }
         catch (DataAccessException e) {
             res.status(401);
-            return "{\"message\": \"Error: Unauthorized\" }";
+            return "{\"message\": \"Error: Unauthorized\" }" ;
         }
         catch (Exception e) {
             res.status(500);

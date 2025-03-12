@@ -39,7 +39,7 @@ public class UserService {
         /**
          * @user takes in only password and username to check the DB
          */
-        UserData potentialUser = userDAO.getUserData(user.username()); // throws DataAccessException "no user"
+        UserData potentialUser = userDAO.getUserData(user.username());// throws DataAccessException "no user"
         if (!potentialUser.password().equals(user.password())) { // Finds the user based on username and then checks password
             throw new DataAccessException("Wrong password");
         }

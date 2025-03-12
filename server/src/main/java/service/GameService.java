@@ -42,7 +42,8 @@ public class GameService {
     }
 
     public int createGame(String authToken, String gameName) throws DataAccessException {
-        authTokenDAO.getAuthData(authToken); // throws data access exception
+        authTokenDAO.getAuthData(authToken);
+        System.out.println("GOT HERE");// throws data access exception
         if (gameDAO.getGameByname(gameName)){
             throw new DataAccessException("Game already exists");
         } // if the game exists, return

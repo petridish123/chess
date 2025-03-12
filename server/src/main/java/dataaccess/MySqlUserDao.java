@@ -87,9 +87,10 @@ public class MySqlUserDao implements UserDataAccess {
                 }
             }
         } catch (SQLException e){
-            throw new DataAccessException(e.getMessage());
+            throw new DataAccessException("User does not exist");
         }
-        return null;
+        throw new DataAccessException("User does not exist");
+        //return null;
     }
 
     @Override
@@ -103,7 +104,7 @@ public class MySqlUserDao implements UserDataAccess {
                 preparedStatement.executeUpdate();
             }
         } catch (SQLException e){
-            throw new DataAccessException(e.getMessage());
+            throw new DataAccessException("User already exists");
         }
     }
 
@@ -116,7 +117,7 @@ public class MySqlUserDao implements UserDataAccess {
             }
 
         }catch (SQLException e){
-            throw new DataAccessException(e.getMessage());
+            throw new DataAccessException("Not clear");
         }
 
     }

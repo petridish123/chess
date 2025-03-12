@@ -86,9 +86,9 @@ public class MySqlAuthDAO implements AuthTokenDataAccess{
                 }
             }
         } catch (SQLException e){
-            throw new DataAccessException(e.getMessage());
+            throw new DataAccessException("unable to find authtoken");
         }
-        return null;
+        throw new DataAccessException("unable to find authtoken");
     }
 
     @Override
@@ -99,9 +99,11 @@ public class MySqlAuthDAO implements AuthTokenDataAccess{
                 preparedStatement.setString(1, authToken);
                 preparedStatement.executeUpdate();
             }
-        } catch (SQLException e){
-            throw new DataAccessException(e.getMessage());
+        } catch (SQLException |DataAccessException e){
+            throw new DataAccessException("unable to delete authtoken");
         }
+
+
     }
 
     @Override
@@ -113,8 +115,8 @@ public class MySqlAuthDAO implements AuthTokenDataAccess{
                 preparedStatement.setString(2,authData.authToken());
                 preparedStatement.executeUpdate();
             }
-        }catch (SQLException e){
-            throw new DataAccessException(e.getMessage());
+        }catch (SQLException | DataAccessException e){
+            throw new DataAccessException("GYAH");
         }
         // call getAuthData
     }
