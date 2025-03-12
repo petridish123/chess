@@ -14,14 +14,17 @@ public class Server {
     GameHandler gameHandler;
     UserHandler userHandler;
     public Server() {
-        this.gameDAO = new MemoryGameDAO(); // Change these
-        this.authTokenDAO = new MemoryAuthTokenDAO();
-        this.userDAO = new MemoryUserDAO();
-        this.userService = new UserService( userDAO, authTokenDAO);
-        this.gameService = new GameService( gameDAO, authTokenDAO);
-        this.gameHandler = new GameHandler(this.gameService);
-        this.userHandler = new UserHandler(this.userService);
-
+        try {
+            this.gameDAO = new MySqlGameDAO(); // Change these
+            this.authTokenDAO = new MySqlAuthDAO();
+            this.userDAO = new MySqlUserDao();
+            this.userService = new UserService(userDAO, authTokenDAO);
+            this.gameService = new GameService(gameDAO, authTokenDAO);
+            this.gameHandler = new GameHandler(this.gameService);
+            this.userHandler = new UserHandler(this.userService);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public int run(int desiredPort) {

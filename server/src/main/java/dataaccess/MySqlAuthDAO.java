@@ -1,13 +1,14 @@
 package dataaccess;
 
-import model.UserData;
+import model.AuthData;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
 
-public class MySqlUserDao implements UserDataAccess {
+public class MySqlAuthDAO implements AuthTokenDataAccess{
+
     private static final String DATABASE_NAME;
     private static final String USER;
     private static final String PASSWORD;
@@ -34,7 +35,7 @@ public class MySqlUserDao implements UserDataAccess {
     }
 
 
-    public MySqlUserDao() throws DataAccessException {
+    public MySqlAuthDAO() throws DataAccessException {
         try {
             var statement = "CREATE DATABASE IF NOT EXISTS " + DATABASE_NAME; // also create table games
             var conn = DriverManager.getConnection(CONNECTION_URL, USER, PASSWORD);
@@ -46,12 +47,9 @@ public class MySqlUserDao implements UserDataAccess {
         }
         try { // creates my table
             var statement =    """ 
-                        CREATE TABLE IF NOT EXISTS users (
+                        CREATE TABLE IF NOT EXISTS authdata (
                             username varchar(255) PRIMARY KEY,
-                            password varchar(255) PRIMARY KEY,
-                            email varchar(255),
-                            authtoken varchar(255),
-                            PRIMARY KEY (username)
+                            authtoken varchar(255) NOT NULL,
                         )"""; // creates the table
             var conn = DriverManager.getConnection(CONNECTION_URL, USER, PASSWORD);
             try (var preparedStatement = conn.prepareStatement(statement)) {
@@ -73,16 +71,15 @@ public class MySqlUserDao implements UserDataAccess {
     }
 
     @Override
-    public UserData getUserData(String username) throws DataAccessException {
-        var statement = "SELECT * FROM users WHERE username = ?";
+    public AuthData getAuthData(String authToken) throws DataAccessException {
+        var statement = "SELECT * FROM authdata WHERE authtoken = ?";
         try (var conn = getConnection()){
             try (var preparedStatement = conn.prepareStatement(statement)) {
-                preparedStatement.setString(1, username);
-                try (var resultSet = preparedStatement.executeQuery()) {
-                    if (resultSet.next()) {
-                        String email = resultSet.getString("email");
-                        String password = resultSet.getString("password");
-                        return new UserData(username, password, email);
+                preparedStatement.setString(1, authToken);
+                try (var result = preparedStatement.executeQuery()) {
+                    if (result.next()){
+                        var username = result.getString("username");
+                        return new AuthData(authToken, username);
                     }
                 }
             }
@@ -93,13 +90,11 @@ public class MySqlUserDao implements UserDataAccess {
     }
 
     @Override
-    public void createUser(UserData user) throws DataAccessException {
-        var statement = "INSERT INTO users (username, password, email) VALUES (?, ?, ?)";
+    public void deleteAuthData(String authToken) throws DataAccessException {
+        var statement = "DELETE FROM authdata WHERE authtoken = ?";
         try (var conn = getConnection()){
             try (var preparedStatement = conn.prepareStatement(statement)) {
-                preparedStatement.setString(1, user.username());
-                preparedStatement.setString(2, user.password());
-                preparedStatement.setString(3, user.email());
+                preparedStatement.setString(1, authToken);
                 preparedStatement.executeUpdate();
             }
         } catch (SQLException e){
@@ -108,13 +103,27 @@ public class MySqlUserDao implements UserDataAccess {
     }
 
     @Override
+    public void insertAuthData(AuthData authData) throws DataAccessException {
+        var statement = "INSERT INTO authdata (username, authtoken) VALUES (?, ?)";
+        try (var conn = getConnection()){
+            try (var preparedStatement = conn.prepareStatement(statement)) {
+                preparedStatement.setString(1,authData.username());
+                preparedStatement.setString(2,authData.authToken());
+                preparedStatement.executeUpdate();
+            }
+        }catch (SQLException e){
+            throw new DataAccessException(e.getMessage());
+        }
+        // call getAuthData
+    }
+
+    @Override
     public void clear() throws DataAccessException {
-        var statement = "TRUNCATE TABLE users";
+        var statement = "TRUNCATE TABLE authdata";
         try (var conn = getConnection()){
             try (var preparedStatement = conn.prepareStatement(statement)) {
                 preparedStatement.executeUpdate();
             }
-
         }catch (SQLException e){
             throw new DataAccessException(e.getMessage());
         }

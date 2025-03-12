@@ -28,8 +28,12 @@ public class GameService {
     }
 
     public void clear() {
-        gameDAO.clear();
-        authTokenDAO.clear();
+        try {
+            gameDAO.clear();
+            authTokenDAO.clear();
+        } catch (DataAccessException e) {
+            return;
+        }
     }
 
     public ArrayList<GameData> listGames(String authToken) throws DataAccessException {

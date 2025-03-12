@@ -66,8 +66,12 @@ public class UserService {
     }
 
     public void clear(){
-        authTokenDAO.clear();
-        userDAO.clear();
+        try {
+            authTokenDAO.clear();
+            userDAO.clear();
+        } catch (DataAccessException e) {
+            return;
+        }
     }
     
 

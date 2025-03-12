@@ -10,6 +10,6 @@ public interface UserDataAccess {
 
 
 
-    void clear();
+    void clear() throws DataAccessException;
 
 }
