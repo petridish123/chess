@@ -104,9 +104,6 @@ public class MySqlGameDAO implements GameDataAccess{
         } catch (SQLException e){
             throw new DataAccessException(e.getMessage());
         }
-
-
-        return null;
     }
 
     @Override
