@@ -112,14 +112,7 @@ public class ServerFacade {
             }
         }
     }
-
-    private static void writeHeader(HttpURLConnection http, String authToken) throws IOException {
-        http.setHeader("Authorization", "Bearer " + authToken);
-        String reqData = new Gson().toJson(authToken);
-        try (OutputStream reqBody = http.getOutputStream()) {
-            reqBody.write(reqData.getBytes());
-        }
-    }
+    
 
     private void throwIfNotSuccessful(HttpURLConnection http) throws IOException, ResponseException {
         var status = http.getResponseCode();
