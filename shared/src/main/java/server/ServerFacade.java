@@ -18,6 +18,7 @@ public class ServerFacade {
     }
 
     /**
+     * NOTE for any function that takes in multiple, you need to turn it into a map
      * TODO : Create a Login function || takes in a userData and then returns an authData object
      * TODO : Create a register || Takes in a user data and returns an authData object
      * TODO : Create a logout || takes in a authtoken string? and returns VOID
