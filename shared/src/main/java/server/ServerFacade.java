@@ -9,6 +9,7 @@ import model.*;
 import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
+import java.util.Map;
 
 public class ServerFacade {
 
@@ -52,7 +53,7 @@ public class ServerFacade {
     }
 
     public ArrayList listGames() throws ResponseException {
-        return this.makeRequest("GET", "/game", this.authToken, ArrayList.class);
+        return this.makeRequest("GET", "/game", null, GameList.class).games();
     }
 
     public GameData createGame(String title) throws ResponseException {
@@ -61,7 +62,9 @@ public class ServerFacade {
     }
 
     public void joinGame(String playerColor, int gameId) throws ResponseException {
-
+        Map req;
+        req = Map.of("playerColor", playerColor, "gameId", gameId);
+        this.makeRequest("PUT", "/game", req, null);
     }
 
 
@@ -103,16 +106,19 @@ public class ServerFacade {
     }
 
 
-    private static void writeBody(Object request, HttpURLConnection http) throws IOException {
+    private void writeBody(Object request, HttpURLConnection http) throws IOException {
         if (request != null) {
             http.addRequestProperty("Content-Type", "application/json");
+            if (this.authToken != null) {
+                http.addRequestProperty("authorization", this.authToken);
+            }
             String reqData = new Gson().toJson(request);
             try (OutputStream reqBody = http.getOutputStream()) {
                 reqBody.write(reqData.getBytes());
             }
         }
     }
-    
+
 
     private void throwIfNotSuccessful(HttpURLConnection http) throws IOException, ResponseException {
         var status = http.getResponseCode();
