@@ -15,9 +15,11 @@ public class ServerFacade {
 
     public String serverUrl;
     public String authToken;
-
+    public ServerFacade() {
+        this("localhost:8080");
+    }
     public ServerFacade(String serverURL) {
-        this.serverUrl = serverURL;
+        this.serverUrl = "http://" + serverURL;
     }
 
     /**
@@ -27,29 +29,47 @@ public class ServerFacade {
      * TODONE : Create a logout || takes in a authtoken string? and returns VOID
      * TODONE : Create a list games || takes in a string authToken and returns a list of gameData
      * TODONE : create a create game || takes in a string auth and a string gameName and returns a game ID
-     * TODO : create  join game ( called play game) || takes in an authToken, player color and gameID
-     * TODO : create a clear function (low priority) || NOTHING RAHHHH
+     * TODONE : create  join game ( called play game) || takes in an authToken, player color and gameID
+     * TODONE : create a clear function (low priority) || NOTHING RAHHHH
      *
      */
-    public AuthData login(String username, String password) throws ResponseException {
+    public boolean login(String username, String password) {
         UserData user = new UserData(username, password);
-        AuthData auth =  makeRequest("POST", "/session", user, AuthData.class);
-        this.authToken = auth.authToken();
-        return auth;
-    }
-
-    public AuthData register(String username, String password, String email) throws ResponseException {
-        UserData user = new UserData(username, password, email);
-        AuthData auth =  makeRequest("POST", "/user", user, AuthData.class);
-        this.authToken = auth.authToken();
-        return auth;
-    }
-
-    public void logout() throws ResponseException {
-        if (this.authToken != null) {
-            this.makeRequest("DELETE", "/session", this.authToken, null);
-            this.authToken = null;
+        try {
+            AuthData auth = makeRequest("POST", "/session", user, AuthData.class);
+            this.authToken = auth.authToken();
+            return true;
+        } catch (ResponseException e) {
+            System.out.println(e.getMessage());
+            return false;
         }
+    }
+
+    public boolean register(String username, String password, String email)  {
+        UserData user = new UserData(username, password, email);
+        try{
+            AuthData auth =  makeRequest("POST", "/user", user, AuthData.class);
+            this.authToken = auth.authToken();
+            return true;
+        }catch(ResponseException e){
+            return false;
+        }
+
+
+
+    }
+
+    public boolean logout()  {
+        if (this.authToken != null) {
+            try{
+                this.makeRequest("DELETE", "/session", this.authToken, null);
+                this.authToken = null;
+                return true;
+            } catch (ResponseException e) {
+                return false;
+            }
+        }
+        return false;
     }
 
     public ArrayList listGames() throws ResponseException {
@@ -61,10 +81,25 @@ public class ServerFacade {
         return this.makeRequest("POST", "/game", game, GameData.class);
     }
 
-    public void joinGame(String playerColor, int gameId) throws ResponseException {
+    public boolean joinGame(String playerColor, int gameId) {
         Map req;
         req = Map.of("playerColor", playerColor, "gameId", gameId);
-        this.makeRequest("PUT", "/game", req, null);
+        try{
+            this.makeRequest("PUT", "/game", req, null);
+            return true;
+        }catch(ResponseException e){
+            return false;
+        }
+
+    }
+
+    public boolean clear(){
+        try {
+            this.makeRequest("DELETE", "/db", null, null);
+            return true;
+        }catch(ResponseException e){
+            return false;
+        }
     }
 
 
@@ -89,7 +124,9 @@ public class ServerFacade {
 
     private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass) throws ResponseException {
         try {
+
             URL url = (new URI(serverUrl + path)).toURL();
+
             HttpURLConnection http = (HttpURLConnection) url.openConnection();
             http.setRequestMethod(method);
             http.setDoOutput(true);
@@ -98,8 +135,10 @@ public class ServerFacade {
             throwIfNotSuccessful(http);
             return readBody(http, responseClass);
         } catch (ResponseException ex) {
+
             throw ex;
         } catch (Exception ex) {
+
             throw new ResponseException(500, ex.getMessage());
         }
     }

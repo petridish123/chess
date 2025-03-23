@@ -28,13 +28,17 @@ public class preLoginREPL {
                         registerPrint();
                         break;
                     }
-                    try{
-                        facade.register(input[1], input[2], input[3]);
+
+                    if (facade.register(input[1], input[2], input[3])){
                         login = true;
+                        out.println("Registered Successfully!");
                         break;
-                    }catch (ResponseException e){
-                        out.println("User already exists!");
                     }
+                    else{
+                        out.println("User already exists!");
+                        break;
+                    }
+
 
                 case "login":
                     if (input.length < 3) {
@@ -42,15 +46,15 @@ public class preLoginREPL {
                         loginPrint();
                         break;
                     }
-                    try {
-                        facade.login(input[1],input[2]);
+                    if (facade.login(input[1], input[2])){
                         login = true;
+                        out.println("Login successful!");
                         break;
-                    } catch (ResponseException e) {
+                    } else {
                         out.println("Please use a valid username and password!");
                         loginPrint();
+                        break;
                     }
-                    break;
                 case "quit":
                     out.println("Goodbye!");
                     return;
