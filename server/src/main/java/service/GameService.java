@@ -56,9 +56,7 @@ public class GameService {
     }
 
     public void joinGame(String authToken, int gameID, String color) throws DataAccessException {
-
         GameData game = gameDAO.getGame(gameID); // throws exception if it doesn't exist
-
         AuthData authData = authTokenDAO.getAuthData(authToken); // throws error as well *kissy face*
         String username = authData.username();
 

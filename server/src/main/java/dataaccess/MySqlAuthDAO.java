@@ -25,9 +25,9 @@ public class MySqlAuthDAO implements AuthTokenDataAccess{
                 }
             }
         } catch (SQLException e){
-            throw new DataAccessException("unable to find authtoken");
+            throw new BadAuth("unable to find authtoken");
         }
-        throw new DataAccessException("unable to find authtoken");
+        throw new BadAuth("unable to find authtoken");
     }
 
     @Override

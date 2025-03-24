@@ -1,6 +1,7 @@
 package server;
 
 import com.google.gson.JsonSyntaxException;
+import dataaccess.BadAuth;
 import dataaccess.DataAccessException;
 import dataaccess.InvalidInput;
 import dataaccess.UnAuthorizedException;
@@ -116,6 +117,10 @@ public class GameHandler {
         }catch (UnAuthorizedException e){
             res.status(403);
             return "{\"message\": \"Error: Forbidden\" }";
+        }
+        catch (BadAuth e){
+            res.status(401);
+            return "{\"message\": \"Error: "+e.getMessage()+"\" }";
         }
         catch (DataAccessException e) {
             res.status(400);
