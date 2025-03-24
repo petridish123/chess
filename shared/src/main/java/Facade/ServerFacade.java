@@ -14,12 +14,15 @@ import java.util.Map;
 public class ServerFacade {
 
     public String serverUrl;
-    public String authToken;
+    public String authToken = "";
+    writer writer;
     public ServerFacade() {
         this("localhost:8080");
     }
     public ServerFacade(String serverURL) {
+
         this.serverUrl = "http://" + serverURL;
+        this.writer =  new writer(this.authToken,this.serverUrl);
     }
 
     /**
@@ -36,8 +39,9 @@ public class ServerFacade {
     public boolean login(String username, String password) {
         UserData user = new UserData(username, password);
         try {
-            AuthData auth = makeRequest("POST", "/session", user, AuthData.class);
+            AuthData auth = this.writer.makeRequest("POST", "/session", user, AuthData.class);
             this.authToken = auth.authToken();
+            this.writer.setAuthToken(auth.authToken());
             return true;
         } catch (ResponseException e) {
 
@@ -48,8 +52,9 @@ public class ServerFacade {
     public boolean register(String username, String password, String email)  {
         UserData user = new UserData(username, password, email);
         try{
-            AuthData auth =  makeRequest("POST", "/user", user, AuthData.class);
+            AuthData auth =  this.writer.makeRequest("POST", "/user", user, AuthData.class);
             this.authToken = auth.authToken();
+            this.writer.setAuthToken(auth.authToken());
             return true;
         }catch(ResponseException e){
             return false;
@@ -62,7 +67,7 @@ public class ServerFacade {
     public boolean logout()  {
         if (this.authToken != null) {
             try{
-                this.makeRequest("DELETE", "/session", this.authToken, null);
+                this.writer.makeRequest("DELETE", "/session", this.authToken, null);
                 this.authToken = null;
                 return true;
             } catch (ResponseException e) {
@@ -75,7 +80,7 @@ public class ServerFacade {
     public ArrayList<GameData> listGames(){
         var games = new ArrayList<GameData>();
         try{
-            games = this.makeRequest("GET", "/game", null, GameList.class).games();
+            games = this.writer.makeRequest("GET", "/game", null, GameList.class).games();
         }catch(ResponseException e){
             System.out.println("Error: " + e.getMessage());
             return new ArrayList<GameData>();
@@ -86,7 +91,7 @@ public class ServerFacade {
     public boolean createGame(String title){
         try{
             GameData game = new GameData(title);
-            this.makeRequest("POST", "/game", game, GameData.class);
+            this.writer.makeRequest("POST", "/game", game, GameData.class);
             return true;
         }catch(ResponseException e){
             return false;
@@ -99,7 +104,7 @@ public class ServerFacade {
 
         req = Map.of("playerColor", playerColor, "gameID", gameId);
         try{
-            this.makeRequest("PUT", "/game", req, null);
+            this.writer.makeRequest("PUT", "/game", req, null);
             return true;
         }catch(ResponseException e){
 
@@ -107,101 +112,5 @@ public class ServerFacade {
         }
 
     }
-
-    public boolean clear(){
-        try {
-            this.makeRequest("DELETE", "/db", null, null);
-            return true;
-        }catch(ResponseException e){
-            return false;
-        }
-    }
-
-
-
-
-
-
-
-
-    /**
-     *
-     * @param method
-     * @param path
-     * @param request
-     * @param responseClass
-     * @return
-     * @param <T>
-     * @throws ResponseException
-     */
-
-
-
-    private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass) throws ResponseException {
-        try {
-
-            URL url = (new URI(serverUrl + path)).toURL();
-
-            HttpURLConnection http = (HttpURLConnection) url.openConnection();
-            http.setRequestMethod(method);
-            http.setDoOutput(true);
-            writeBody(request, http);
-            http.connect();
-            throwIfNotSuccessful(http);
-            return readBody(http, responseClass);
-        } catch (ResponseException ex) {
-
-            throw ex;
-        } catch (Exception ex) {
-
-            throw new ResponseException(500, ex.getMessage());
-        }
-    }
-
-
-    private void writeBody(Object request, HttpURLConnection http) throws IOException {
-        if (this.authToken != null) {
-            http.addRequestProperty("authorization", this.authToken);
-        }
-        if (request != null) {
-            http.addRequestProperty("Content-Type", "application/json");
-
-            String reqData = new Gson().toJson(request);
-            try (OutputStream reqBody = http.getOutputStream()) {
-                reqBody.write(reqData.getBytes());
-            }
-        }
-    }
-
-
-    private void throwIfNotSuccessful(HttpURLConnection http) throws IOException, ResponseException {
-        var status = http.getResponseCode();
-        if (!isSuccessful(status)) {
-            try (InputStream respErr = http.getErrorStream()) {
-                if (respErr != null) {
-                    throw ResponseException.fromJson(respErr);
-                }
-            }
-
-            throw new ResponseException(status, "other failure: " + status);
-        }
-    }
-
-    private static <T> T readBody(HttpURLConnection http, Class<T> responseClass) throws IOException {
-        T response = null;
-        if (http.getContentLength() < 0) {
-            try (InputStream respBody = http.getInputStream()) {
-                InputStreamReader reader = new InputStreamReader(respBody);
-                if (responseClass != null) {
-                    response = new Gson().fromJson(reader, responseClass);
-                }
-            }
-        }
-        return response;
-    }
-
-
-    private boolean isSuccessful(int status) {
-        return status / 100 == 2;
-    }
+    
 }
