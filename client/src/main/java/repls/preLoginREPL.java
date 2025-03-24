@@ -12,11 +12,12 @@ public class preLoginREPL {
     postLoginREPL postLogin;
     public preLoginREPL(ServerFacade facade) {
         this.facade = facade;
-        this.postLogin = new postLoginREPL(facade);
+        this.postLogin = new postLoginREPL(facade, this);
+        out.println(SET_BG_COLOR_RED + "Welcome to chess!"+ RESET_BG_COLOR + "\n" + SET_BG_COLOR_RED + "Please read the help to log in and get playing!" + RESET_BG_COLOR);
     }
 
     public void run() {
-        out.println(SET_BG_COLOR_RED + "Welcome to chess! \nPlease read the help to log in and get playing!" + RESET_BG_COLOR);
+
         helpPrint();
         boolean login = false;
         while (!login) {

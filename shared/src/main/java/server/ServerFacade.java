@@ -5,7 +5,7 @@ import com.google.gson.Gson;
 //import exception.ErrorResponse;
 import exception.ResponseException;
 import model.*;
-
+import server.GameList;
 import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
@@ -72,13 +72,25 @@ public class ServerFacade {
         return false;
     }
 
-    public ArrayList listGames() throws ResponseException {
-        return this.makeRequest("GET", "/game", null, GameList.class).games();
+    public ArrayList<GameData> listGames(){
+        var games = new ArrayList<GameData>();
+        try{
+            games = this.makeRequest("GET", "/game", null, GameList.class).games();
+        }catch(ResponseException e){
+            return new ArrayList<GameData>();
+        }
+        return games;
     }
 
-    public GameData createGame(String title) throws ResponseException {
-        GameData game = new GameData(title);
-        return this.makeRequest("POST", "/game", game, GameData.class);
+    public boolean createGame(String title){
+        try{
+            GameData game = new GameData(title);
+            this.makeRequest("POST", "/game", game, GameData.class);
+            return true;
+        }catch(ResponseException e){
+            return false;
+        }
+
     }
 
     public boolean joinGame(String playerColor, int gameId) {
