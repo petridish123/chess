@@ -1,4 +1,4 @@
-package Handler;
+package server;
 
 import com.google.gson.JsonSyntaxException;
 import dataaccess.DataAccessException;

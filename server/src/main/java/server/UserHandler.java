@@ -1,13 +1,11 @@
-package Handler;
+package server;
 
 
 import com.google.gson.JsonSyntaxException;
-import dataaccess.UnAuthorizedException;
 import model.AuthData;
 import model.UserData;
 import service.UserService;
 import dataaccess.DataAccessException;
-import model.GameData;
 import spark.Response;
 import spark.Request;
 import com.google.gson.Gson;

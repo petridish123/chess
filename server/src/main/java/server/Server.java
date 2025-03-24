@@ -1,4 +1,4 @@
-package Handler;
+package server;
 
 import dataaccess.*;
 import service.GameService;

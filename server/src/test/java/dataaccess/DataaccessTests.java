@@ -1,6 +1,6 @@
 package dataaccess;
 import org.junit.jupiter.api.*;
-import Handler.Server;
+import server.Server;
 import service.GameService;
 import service.UserService;
 

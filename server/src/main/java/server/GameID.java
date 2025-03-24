@@ -1,4 +1,4 @@
-package Handler;
+package server;
 
 public record GameID(int gameID) {
 }
