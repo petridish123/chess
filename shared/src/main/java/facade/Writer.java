@@ -1,4 +1,4 @@
-package Facade;
+package facade;
 
 import com.google.gson.Gson;
 import exception.ResponseException;
@@ -11,10 +11,10 @@ import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
 
-public class writer {
+public class Writer {
     String serverUrl;
     String authToken;
-    public writer(String authToken, String url) {
+    public Writer(String authToken, String url) {
         this.serverUrl = url;
         this.authToken = authToken;
     }

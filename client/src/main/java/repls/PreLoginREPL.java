@@ -1,18 +1,18 @@
 package repls;
 
-import Facade.ServerFacade;
+import facade.ServerFacade;
 
 import java.util.Scanner;
 import static ui.EscapeSequences.*;
 import static java.lang.System.out;
 
-public class preLoginREPL {
+public class PreLoginREPL {
     ServerFacade facade;
-    postLoginREPL postLogin;
-    public preLoginREPL(ServerFacade facade) {
+    PostLoginREPL postLogin;
+    public PreLoginREPL(ServerFacade facade) {
         this.facade = facade;
-        this.postLogin = new postLoginREPL(facade, this);
-        out.println(SET_BG_COLOR_RED + "Welcome to chess!"+ RESET_BG_COLOR + "\n" + SET_BG_COLOR_RED + "Please read the help to log in and get playing!" + RESET_BG_COLOR);
+        this.postLogin = new PostLoginREPL(facade, this);
+        out.println(SET_BG_COLOR_RED + "Welcome to chess!" + RESET_BG_COLOR);
         helpPrint();
     }
 

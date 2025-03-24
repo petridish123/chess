@@ -1,41 +1,29 @@
-package Facade;
+package facade;
 
 
-import com.google.gson.Gson;
 //import exception.ErrorResponse;
 import exception.ResponseException;
 import model.*;
 import model.GameList;
-import java.io.*;
-import java.net.*;
-import java.util.ArrayList;
+
+        import java.util.ArrayList;
 import java.util.Map;
 
 public class ServerFacade {
 
     public String serverUrl;
     public String authToken = "";
-    writer writer;
+    Writer writer;
     public ServerFacade() {
         this("localhost:8080");
     }
     public ServerFacade(String serverURL) {
 
         this.serverUrl = "http://" + serverURL;
-        this.writer =  new writer(this.authToken,this.serverUrl);
+        this.writer =  new Writer(this.authToken,this.serverUrl);
     }
 
-    /**
-     * NOTE for any function that takes in multiple, you need to turn it into a map
-     * TODONE : Create a Login function || takes in a userData and then returns an authData object
-     * TODONE : Create a register || Takes in a user data and returns an authData object
-     * TODONE : Create a logout || takes in a authtoken string? and returns VOID
-     * TODONE : Create a list games || takes in a string authToken and returns a list of gameData
-     * TODONE : create a create game || takes in a string auth and a string gameName and returns a game ID
-     * TODONE : create  join game ( called play game) || takes in an authToken, player color and gameID
-     * TODONE : create a clear function (low priority) || NOTHING RAHHHH
-     *
-     */
+
     public boolean login(String username, String password) {
         UserData user = new UserData(username, password);
         try {
@@ -112,5 +100,5 @@ public class ServerFacade {
         }
 
     }
-    
+
 }

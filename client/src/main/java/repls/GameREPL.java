@@ -2,7 +2,7 @@ package repls;
 
 import chess.ChessGame;
 import model.GameData;
-import Facade.ServerFacade;
+import facade.ServerFacade;
 
 import java.util.Objects;
 import java.util.Scanner;
@@ -14,13 +14,13 @@ import static ui.EscapeSequences.*;
 
 import static java.lang.System.out;
 
-public class gameREPL {
+public class GameREPL {
     ServerFacade facade;
-    postLoginREPL postREPL;
+    PostLoginREPL postREPL;
     int gameID;
     String color;
     GameData game;
-    public gameREPL(ServerFacade facade, postLoginREPL postREPL) {
+    public GameREPL(ServerFacade facade, PostLoginREPL postREPL) {
         this.facade = facade;
         this.postREPL = postREPL;
     }

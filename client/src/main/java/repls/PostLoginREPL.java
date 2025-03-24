@@ -1,7 +1,7 @@
 package repls;
 
 import model.GameData;
-import Facade.ServerFacade;
+import facade.ServerFacade;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -9,15 +9,15 @@ import java.util.Scanner;
 
 import static java.lang.System.out;
 
-public class postLoginREPL {
+public class PostLoginREPL {
     ServerFacade facade;
-    preLoginREPL preREPL;
-    gameREPL gameREPL;
+    PreLoginREPL preREPL;
+    GameREPL gameREPL;
     ArrayList<GameData> games = new ArrayList<>();
-    public postLoginREPL(ServerFacade facade, preLoginREPL preREPL) {
+    public PostLoginREPL(ServerFacade facade, PreLoginREPL preREPL) {
         this.facade = facade;
         this.preREPL = preREPL;
-        gameREPL = new gameREPL(facade, this);
+        gameREPL = new GameREPL(facade, this);
     }
 
     void run(){
@@ -40,7 +40,7 @@ public class postLoginREPL {
                         joinPrint();
                         break;
                     }
-                    else{
+
                         try {
                             int id = Integer.parseInt(input[1]);
                             String color = input[2].toUpperCase();
@@ -60,14 +60,15 @@ public class postLoginREPL {
                             joinPrint();
                         }
                         break;
-                    }
+
 
 
                 case "create":
                     if (input.length < 2){
                         out.println("not enough arguments!");
+                        break;
                     }
-                    else{
+
                         if (facade.createGame(input[1])){
                             out.println("You created the game as " + input[1]);
                         }
@@ -75,7 +76,7 @@ public class postLoginREPL {
                             out.println("Game already exists!");
                         }
                         break;
-                    }
+
                 case "list":
                     ArrayList<GameData> games = facade.listGames();
                     for (GameData game: games){
