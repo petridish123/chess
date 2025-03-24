@@ -14,11 +14,10 @@ public class preLoginREPL {
         this.facade = facade;
         this.postLogin = new postLoginREPL(facade, this);
         out.println(SET_BG_COLOR_RED + "Welcome to chess!"+ RESET_BG_COLOR + "\n" + SET_BG_COLOR_RED + "Please read the help to log in and get playing!" + RESET_BG_COLOR);
+        helpPrint();
     }
 
     public void run() {
-
-        helpPrint();
         boolean login = false;
         while (!login) {
             String[] input = getUserInput();

@@ -1,18 +1,17 @@
-package server;
+package Handler;
 
 import com.google.gson.JsonSyntaxException;
 import dataaccess.DataAccessException;
 import dataaccess.InvalidInput;
 import dataaccess.UnAuthorizedException;
 import model.GameData;
+import model.GameList;
 import service.GameService;
 import spark.Response;
 import spark.Request;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Objects;
 
 /*
  *Handle the errors
@@ -37,6 +36,7 @@ public class GameHandler {
         ArrayList<GameData> gameSet;
         try {
             gameSet = gameService.listGames(authToken);
+
         }
         catch (DataAccessException e) {
             res.status(401);
@@ -95,16 +95,21 @@ public class GameHandler {
         int id;
         String color;
         GameRequest colorId;
+
         try {
-            authToken = new Gson().fromJson(req.headers("authorization"), String.class);
+            authToken = req.headers("authorization");
             colorId = new Gson().fromJson(req.body(), GameRequest.class);
             color = colorId.playerColor();
+
             id = colorId.gameID();
         } catch (JsonSyntaxException e) {
             res.status(401);
             return "{\"message\": \"Error: Invalid request\" }";
-        } try{
+        }
+
+        try{
             gameService.joinGame(authToken, id, color);
+
         }catch (InvalidInput e){
             res.status(400);
             return "{\"message\": \"Error: Forbidden\" }";
@@ -114,10 +119,11 @@ public class GameHandler {
         }
         catch (DataAccessException e) {
             res.status(400);
-            return "{\"message\": \"Error: "+e.getMessage()+" \" }";
+            return "{\"message\": \"Error: "+e.getMessage()+"\" }";
         }
         catch (Exception e) {
             res.status(500);
+
             return "{\"message\": \"Error: " + e.getMessage() + "\" }";
         }
 

@@ -43,7 +43,9 @@ public class MySqlGameDAO implements GameDataAccess{
         var statement = "SELECT * FROM games WHERE gameID=?";
         try (var conn = DatabaseManager.getConnection()){
             try (var preparedStatement = conn.prepareStatement(statement)) {
+
                 preparedStatement.setInt(1, id);
+
                 try (var result = preparedStatement.executeQuery()){
                     if (result.next()) {
                         var gameID = result.getInt("gameID");
@@ -58,6 +60,7 @@ public class MySqlGameDAO implements GameDataAccess{
         } catch (SQLException e){
             throw new DataAccessException(e.getMessage());
         }
+
        throw new DataAccessException("unable to find game");
     }
 

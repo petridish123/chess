@@ -1,11 +1,9 @@
-package server;
+package Handler;
 
 import dataaccess.*;
 import service.GameService;
 import service.UserService;
 import spark.*;
-
-import java.sql.SQLException;
 
 public class Server{
     UserService userService;

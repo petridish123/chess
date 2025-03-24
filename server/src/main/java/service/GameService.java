@@ -37,13 +37,14 @@ public class GameService {
     }
 
     public ArrayList<GameData> listGames(String authToken) throws DataAccessException {
+
         authTokenDAO.getAuthData(authToken); // throws data access exception
         return gameDAO.listGames();
     }
 
     public int createGame(String authToken, String gameName) throws DataAccessException {
         authTokenDAO.getAuthData(authToken);
-        System.out.println("GOT HERE");// throws data access exception
+
         if (gameDAO.getGameByname(gameName)){
             throw new DataAccessException("Game already exists");
         } // if the game exists, return
@@ -55,7 +56,9 @@ public class GameService {
     }
 
     public void joinGame(String authToken, int gameID, String color) throws DataAccessException {
+
         GameData game = gameDAO.getGame(gameID); // throws exception if it doesn't exist
+
         AuthData authData = authTokenDAO.getAuthData(authToken); // throws error as well *kissy face*
         String username = authData.username();
 

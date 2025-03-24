@@ -4,6 +4,7 @@ import model.GameData;
 import server.ServerFacade;
 
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.Scanner;
 
 import static java.lang.System.out;
@@ -11,9 +12,12 @@ import static java.lang.System.out;
 public class postLoginREPL {
     ServerFacade facade;
     preLoginREPL preREPL;
+    gameREPL gameREPL;
+    ArrayList<GameData> games = new ArrayList<>();
     public postLoginREPL(ServerFacade facade, preLoginREPL preREPL) {
         this.facade = facade;
         this.preREPL = preREPL;
+        gameREPL = new gameREPL(facade, this);
     }
 
     void run(){
@@ -37,11 +41,21 @@ public class postLoginREPL {
                         break;
                     }
                     else{
-                        if (facade.joinGame(input[2], Integer.parseInt(input[1]))){
-                            joined = true;
-                            out.println("You joined the game as " + input[2]);
-                        }
-                        else{
+                        try {
+                            int id = Integer.parseInt(input[1]);
+                            String color = input[2].toUpperCase();
+                            if (facade.joinGame(input[2], id+1)) {
+                                getGames();
+                                joined = true;
+                                out.println("You joined the game as " + input[2]);
+                                this.gameREPL.setGame(Integer.parseInt(input[1]),input[2], games.get(id));
+                                this.gameREPL.run();
+                            }
+                            else{
+                                out.println("Please type in a valid game number and color");
+                                joinPrint();
+                            }
+                        }catch (Exception e) {
                             out.println("Please type in a valid game number and color");
                             joinPrint();
                         }
@@ -65,11 +79,13 @@ public class postLoginREPL {
                 case "list":
                     ArrayList<GameData> games = facade.listGames();
                     for (GameData game: games){
-                        out.println(game);
+                        int id = game.gameID() - 1;
+                        String name = game.gameName();
+                        String white = (!Objects.equals(game.whiteUsername(), null)) ? game.whiteUsername()  : "Empty";
+                        String black = (!Objects.equals(game.blackUsername(), null)) ? game.blackUsername()  : "Empty";
+                        out.println("("+id+")" + "  name : " + name + "| white player : " + white + "| black player : " + black );
                     }
                     break;
-
-
                 case "quit":
                     out.println("Goodbye!");
                     return;
@@ -84,6 +100,12 @@ public class postLoginREPL {
         out.print("\n[LOGGED IN] >>> ");
         Scanner scanner = new Scanner(System.in);
         return scanner.nextLine().split(" ");
+    }
+
+    private void getGames() {
+        games = new ArrayList<>();
+        ArrayList<GameData> gameList = facade.listGames();
+        games.addAll(gameList);
     }
 
     private void helpPrint() {

@@ -5,7 +5,7 @@ import com.google.gson.Gson;
 //import exception.ErrorResponse;
 import exception.ResponseException;
 import model.*;
-import server.GameList;
+import model.GameList;
 import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
@@ -40,7 +40,7 @@ public class ServerFacade {
             this.authToken = auth.authToken();
             return true;
         } catch (ResponseException e) {
-            System.out.println(e.getMessage());
+
             return false;
         }
     }
@@ -77,6 +77,7 @@ public class ServerFacade {
         try{
             games = this.makeRequest("GET", "/game", null, GameList.class).games();
         }catch(ResponseException e){
+            System.out.println("Error: " + e.getMessage());
             return new ArrayList<GameData>();
         }
         return games;
@@ -95,11 +96,13 @@ public class ServerFacade {
 
     public boolean joinGame(String playerColor, int gameId) {
         Map req;
-        req = Map.of("playerColor", playerColor, "gameId", gameId);
+
+        req = Map.of("playerColor", playerColor, "gameID", gameId);
         try{
             this.makeRequest("PUT", "/game", req, null);
             return true;
         }catch(ResponseException e){
+
             return false;
         }
 
@@ -157,11 +160,12 @@ public class ServerFacade {
 
 
     private void writeBody(Object request, HttpURLConnection http) throws IOException {
+        if (this.authToken != null) {
+            http.addRequestProperty("authorization", this.authToken);
+        }
         if (request != null) {
             http.addRequestProperty("Content-Type", "application/json");
-            if (this.authToken != null) {
-                http.addRequestProperty("authorization", this.authToken);
-            }
+
             String reqData = new Gson().toJson(request);
             try (OutputStream reqBody = http.getOutputStream()) {
                 reqBody.write(reqData.getBytes());
