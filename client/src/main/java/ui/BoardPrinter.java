@@ -35,7 +35,7 @@ public class BoardPrinter {
 
     private String startingRow(boolean reversed) {
         return SET_BG_COLOR_DARK_GREY+
-                (!reversed ? "    a  b  c  d  e  f  g  h    " : "    h  g  f  e  d  c  b  a    ") +
+                (!reversed ? startW : startB) +
                 RESET_BG_COLOR;
 
     }
@@ -47,7 +47,8 @@ public class BoardPrinter {
 
         for (int i = 1; i < 9; i++) {
             int column = !reversed ? i : (i * -1) + 9;
-            output += SET_BG_COLOR_BLACK; // set the right one
+//            row = !reversed ? i : (i * -1) + 9;
+            output += correctBackgroundColor(row, column); // set the right one
             output += (piece(row,column));
         }
 
@@ -62,8 +63,7 @@ public class BoardPrinter {
     }
 
     private String correctBackgroundColor(int row, int column) {
-        String output = "";
-        return output + SET_BG_COLOR_BLACK;
+        return (((row+column) % 2) == 0) ? SET_BG_COLOR_BLACK : SET_BG_COLOR_WHITE;
     }
 
     private String piece(int row, int column) {
@@ -72,7 +72,7 @@ public class BoardPrinter {
         ChessPiece piece = game.getBoard().getPiece(position);
 
         if (piece != null) {
-
+            output += SET_TEXT_COLOR_RED;
             switch (piece.getPieceType()) {
                 case QUEEN -> output += (piece.getTeamColor() == ChessGame.TeamColor.WHITE ? WHITE_QUEEN : BLACK_QUEEN);
                 case KING -> output += (piece.getTeamColor() == ChessGame.TeamColor.WHITE ? WHITE_KING : BLACK_KING );
@@ -81,6 +81,7 @@ public class BoardPrinter {
                 case ROOK -> output += (piece.getTeamColor() == ChessGame.TeamColor.WHITE ? WHITE_ROOK : BLACK_ROOK);
                 case PAWN -> output += (piece.getTeamColor() == ChessGame.TeamColor.WHITE ? WHITE_PAWN : BLACK_PAWN);
             }
+            output += RESET_TEXT_COLOR;
         } else {
             output += EMPTY;
         }
