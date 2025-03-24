@@ -1,7 +1,7 @@
 package repls;
 
 import model.GameData;
-import server.ServerFacade;
+import Facade.ServerFacade;
 
 import java.util.ArrayList;
 import java.util.Objects;

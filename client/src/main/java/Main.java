@@ -1,6 +1,6 @@
 import chess.*;
 import repls.preLoginREPL;
-import server.ServerFacade;
+import Facade.ServerFacade;
 
 public class Main {
     public static void main(String[] args) {

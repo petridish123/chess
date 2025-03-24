@@ -2,19 +2,15 @@ package repls;
 
 import chess.ChessGame;
 import model.GameData;
-import server.ServerFacade;
+import Facade.ServerFacade;
 
 import java.util.Objects;
 import java.util.Scanner;
-import model.GameData;
+
 import ui.BoardPrinter;
 
 import static ui.EscapeSequences.*;
 
-import java.util.ArrayList;
-
-
-import static java.lang.System.out;
 
 import static java.lang.System.out;
 

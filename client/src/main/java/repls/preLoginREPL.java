@@ -1,7 +1,6 @@
 package repls;
 
-import exception.ResponseException;
-import server.ServerFacade;
+import Facade.ServerFacade;
 
 import java.util.Scanner;
 import static ui.EscapeSequences.*;
