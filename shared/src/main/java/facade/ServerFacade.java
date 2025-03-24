@@ -8,6 +8,7 @@ import model.GameList;
 
         import java.util.ArrayList;
 import java.util.Map;
+import java.util.Objects;
 
 public class ServerFacade {
 
@@ -89,7 +90,9 @@ public class ServerFacade {
 
     public boolean joinGame(String playerColor, int gameId) {
         Map req;
-
+        if (Objects.isNull(playerColor)){
+            return true;
+        }
         req = Map.of("playerColor", playerColor, "gameID", gameId);
         try{
             this.writer.makeRequest("PUT", "/game", req, null);

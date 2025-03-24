@@ -62,6 +62,28 @@ public class PostLoginREPL {
                         break;
 
 
+                case "observe":
+                    if (input.length < 2){
+                        out.println("not enough arguments!");
+                    }
+                    try {
+                        int id = Integer.parseInt(input[1]);
+                        if (facade.joinGame(null, id+1)) {
+                            getGames();
+                            joined = true;
+                            out.println("You joined the game as observer");
+                            this.gameREPL.setGame(Integer.parseInt(input[1]),null, games.get(id));
+                            this.gameREPL.run();
+                        }
+                        else{
+                            out.println("Please type in a valid gameID");
+
+                        }
+                    }catch (Exception e) {
+                        out.println("Please type in a valid gameID");
+
+                    }
+                    break;
 
                 case "create":
                     if (input.length < 2){

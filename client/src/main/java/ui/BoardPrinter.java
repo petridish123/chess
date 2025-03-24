@@ -10,8 +10,8 @@ import static ui.EscapeSequences.*;
 import static ui.EscapeSequences.SET_TEXT_COLOR_BLACK;
 
 public class BoardPrinter {
-    String startB = " h"+ EMPTY  +"g"+ EMPTY  +"f"+ EMPTY  +"e"+ EMPTY  +"d"+ EMPTY  +"c"+ EMPTY  +"b" + EMPTY+ "a ";
-    String startW = " a"+ EMPTY  +"b"+ EMPTY  +"c"+ EMPTY  +"d"+ EMPTY  +"e"+ EMPTY  +"f"+ EMPTY  +"g" + EMPTY+ "h ";
+    String startB = EMPTY + "h   g   f  e   d  c   b   a ";
+    String startW = EMPTY + "a   b   c  d   e   f  g   h ";
     ChessGame game;
 
     public BoardPrinter(ChessGame game) {

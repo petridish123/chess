@@ -20,6 +20,7 @@ public class GameREPL {
     int gameID;
     String color;
     GameData game;
+    boolean observer = false;
     public GameREPL(ServerFacade facade, PostLoginREPL postREPL) {
         this.facade = facade;
         this.postREPL = postREPL;
@@ -34,6 +35,10 @@ public class GameREPL {
     void run(){
         out.print(RESET_TEXT_COLOR + RESET_BG_COLOR);
         var playing = true;
+        if (Objects.isNull(color)) {
+            color = "WHITE";
+            observer = true;
+        }
         while(playing){
             //print board here
             String[] input = getUserInput();
