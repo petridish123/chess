@@ -43,15 +43,29 @@ public class GameREPL {
             //print board here
             String[] input = getUserInput();
             switch(input[0]){
-                case "board":
+                case "redraw":
                     ChessGame.TeamColor teamColor = (Objects.equals(color, "WHITE")) ? ChessGame.TeamColor.WHITE : ChessGame.TeamColor.BLACK;
                     new BoardPrinter(game.game()).printBoard(teamColor);
                     break;
                 case "quit":
                     return;
-                case "leave": // actually leave the game here!
+                case "leave":
+                    if (observer){
+                        postREPL.run();
+                        return;    // actually leave the game here!
+                    }
                     postREPL.run();
                     return;
+                case "move":
+                    if (observer){
+                        out.println("You are only observing this game, you cannot make moves");
+                        break;
+                    }
+                case "resign":
+                    postREPL.run();
+                    return;
+                case "highlight":
+                    break;
                 default:
                     out.println("help: this menu \nquit: leave the game \nboard: print the board \nleave : leave the game");
                     out.println("on your turn, type the starting position followed by a valid end position");
@@ -64,6 +78,11 @@ public class GameREPL {
         out.print("\n[" + gameID + "] >>> ");
         Scanner scanner = new Scanner(System.in);
         return scanner.nextLine().split(" ");
+    }
+
+    private void helpPrint(){
+        out.println("help : this menu");
+        out.println("leave : leave the game");
     }
 
 }
