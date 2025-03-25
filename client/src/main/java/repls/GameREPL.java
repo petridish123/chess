@@ -47,8 +47,7 @@ public class GameREPL {
                     ChessGame.TeamColor teamColor = (Objects.equals(color, "WHITE")) ? ChessGame.TeamColor.WHITE : ChessGame.TeamColor.BLACK;
                     new BoardPrinter(game.game()).printBoard(teamColor);
                     break;
-                case "quit":
-                    return;
+
                 case "leave":
                     if (observer){
                         postREPL.run();
@@ -67,8 +66,7 @@ public class GameREPL {
                 case "highlight":
                     break;
                 default:
-                    out.println("help: this menu \nquit: leave the game \nboard: print the board \nleave : leave the game");
-                    out.println("on your turn, type the starting position followed by a valid end position");
+                    helpPrint();
                     break;
             }
         }
@@ -83,6 +81,27 @@ public class GameREPL {
     private void helpPrint(){
         out.println("help : this menu");
         out.println("leave : leave the game");
+        out.println("redraw : print the board");
+        out.println("highlight <position> : highlight the valid moves of a certain piece");
+        out.println("resign : resign the game");
+        out.println("move <start position> <end position> : move piece from start position to end position");
+
+    }
+
+    private void move(){
+
+    }
+    private void resign(){
+
+    }
+    private void printBoard(ChessGame.TeamColor teamColor){
+
+    }
+    private void highlight(){
+
+    }
+    private void leave(){
+
     }
 
 }
