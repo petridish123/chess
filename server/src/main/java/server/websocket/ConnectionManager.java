@@ -24,7 +24,7 @@ public class ConnectionManager {
     }
 
     /*
-    TODO: I need to create a function that broadcasts to a specific group
+    
      */
     public void broadcastNotification(String excludeVisitorName, ServerMessage notification) throws IOException {
         var removeList = new ArrayList<Connection>();
