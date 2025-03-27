@@ -24,7 +24,7 @@ public class ConnectionManager {
     }
 
     /*
-    
+
      */
     public void broadcastNotification(String excludeVisitorName, ServerMessage notification) throws IOException {
         var removeList = new ArrayList<Connection>();
