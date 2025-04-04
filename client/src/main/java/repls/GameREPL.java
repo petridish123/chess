@@ -75,7 +75,7 @@ public class GameREPL {
     }
 
     private String[] getUserInput() {
-        out.print("\n[" + gameID + "] >>> ");
+        out.print("\n[IN-GAME] >>> ");
         Scanner scanner = new Scanner(System.in);
         return scanner.nextLine().split(" ");
     }

@@ -73,7 +73,7 @@ public class PostLoginREPL {
                             joined = true;
                             out.println("You joined the game as observer");
                             this.gameREPL.setGame(Integer.parseInt(input[1]),null, games.get(id));
-                            
+
                             this.gameREPL.run();
                         }
                         else{
