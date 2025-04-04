@@ -9,4 +9,6 @@ public class Notification extends ServerMessage {
     public String getNotification() {
         return notification;
     }
+
+
 }
