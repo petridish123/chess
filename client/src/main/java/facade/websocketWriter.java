@@ -11,7 +11,9 @@ import ui.EscapeSequences;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Objects;
 
+import repls.GameREPL;
 import static ui.EscapeSequences.ERASE_LINE;
 
 
@@ -64,7 +66,8 @@ public class websocketWriter extends Endpoint {
     private void printLoadedGame(ChessGame game) {
         System.out.print(ERASE_LINE + "\r\n");
         GameREPL.boardPrinter.updateGame(game);
-        GameREPL.boardPrinter.printBoard(GameREPL.color, null);
+        ChessGame.TeamColor teamColor = (Objects.equals(GameREPL.color, "WHITE")) ? ChessGame.TeamColor.WHITE : ChessGame.TeamColor.BLACK;
+        GameREPL.boardPrinter.printBoard(teamColor);
         System.out.print("[IN-GAME] >>> ");
     }
 

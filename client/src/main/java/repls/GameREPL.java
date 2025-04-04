@@ -18,9 +18,10 @@ public class GameREPL {
     ServerFacade facade;
     PostLoginREPL postREPL;
     int gameID;
-    String color;
+    public static String color;
     GameData game;
     boolean observer = false;
+    public static BoardPrinter boardPrinter;
     public GameREPL(ServerFacade facade, PostLoginREPL postREPL) {
         this.facade = facade;
         this.postREPL = postREPL;
@@ -30,6 +31,7 @@ public class GameREPL {
         this.gameID = gameID;
         this.color = color;
         this.game = game;
+        boardPrinter = new BoardPrinter(game.game());
     }
 
     void run(){
@@ -45,7 +47,7 @@ public class GameREPL {
             switch(input[0]){
                 case "redraw":
                     ChessGame.TeamColor teamColor = (Objects.equals(color, "WHITE")) ? ChessGame.TeamColor.WHITE : ChessGame.TeamColor.BLACK;
-                    new BoardPrinter(game.game()).printBoard(teamColor);
+                    boardPrinter.printBoard(teamColor);
                     break;
 
                 case "leave":
