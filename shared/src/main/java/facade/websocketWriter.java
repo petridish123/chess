@@ -1,12 +1,12 @@
 package facade;
 
 import javax.websocket.*;
-
-
-
+import com.google.gson.Gson;
+import exception.ResponseException;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+
 
 public class websocketWriter extends Endpoint {
 
