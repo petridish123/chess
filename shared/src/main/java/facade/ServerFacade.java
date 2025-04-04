@@ -96,6 +96,7 @@ public class ServerFacade {
         req = Map.of("playerColor", playerColor, "gameID", gameId);
         try{
             this.writer.makeRequest("PUT", "/game", req, null);
+            // add websocket writing here
             return true;
         }catch(ResponseException e){
 
