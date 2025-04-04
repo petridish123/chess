@@ -1,18 +1,26 @@
 package server;
 
 import dataaccess.*;
+import org.eclipse.jetty.websocket.api.Session;
+import server.websocket.WebSocketHandler;
 import service.GameService;
 import service.UserService;
 import spark.*;
+import websocket.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class Server{
-    UserService userService;
-    GameService gameService;
+    public static UserService userService;
+    public static GameService gameService;
     UserDataAccess userDAO;
     AuthTokenDataAccess authTokenDAO;
     GameDataAccess gameDAO;
     GameHandler gameHandler;
     UserHandler userHandler;
+    WebSocketHandler webSocketHandler;
+    public static ConcurrentHashMap<Session, Integer> gameSessions = new ConcurrentHashMap<>();
+
+
     public Server() {
         try{
             DatabaseManager.createDatabase();
@@ -23,10 +31,11 @@ public class Server{
             this.gameDAO = new MySqlGameDAO(); // Change these
             this.authTokenDAO = new MySqlAuthDAO();
             this.userDAO = new MySqlUserDao();
-            this.userService = new UserService(userDAO, authTokenDAO);
-            this.gameService = new GameService(gameDAO, authTokenDAO);
-            this.gameHandler = new GameHandler(this.gameService);
-            this.userHandler = new UserHandler(this.userService);
+            userService = new UserService(userDAO, authTokenDAO);
+            gameService = new GameService(gameDAO, authTokenDAO);
+            this.gameHandler = new GameHandler(gameService);
+            this.userHandler = new UserHandler(userService);
+            this.webSocketHandler = new WebSocketHandler();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -44,7 +53,7 @@ public class Server{
         Spark.staticFiles.location("web");
 
         // Register your endpoints and handle exceptions here.
-
+        Spark.webSocket("/ws", webSocketHandler);
         //This line initializes the server and can be removed once you have a functioning endpoint
 
         Spark.delete("/db", this::clear);

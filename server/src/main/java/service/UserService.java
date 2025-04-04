@@ -25,6 +25,8 @@ public class UserService {
         this.authTokenDAO = authTokenDAO;
     }
 
+
+
     public AuthData registerUser(UserData user) throws DataAccessException {
 
         userDAO.createUser(user); // can throw a data access exception when the user is already in the DB
