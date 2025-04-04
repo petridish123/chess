@@ -6,6 +6,7 @@ import chess.ChessGame;
 import com.google.gson.Gson;
 import dataaccess.DataAccessException;
 import model.AuthData;
+import model.GameData;
 import model.UserData;
 import server.*;
 import exception.ResponseException;
@@ -21,13 +22,14 @@ import websocket.messages.Error;
 
 
 import java.io.IOException;
+import java.util.Objects;
 import java.util.Timer;
 import java.util.concurrent.ConcurrentHashMap;
 
 @WebSocket
 public class WebSocketHandler {
 
-    private final ConnectionManager connections = new ConnectionManager();
+
 
 
     @OnWebSocketMessage
@@ -63,16 +65,39 @@ public class WebSocketHandler {
         Server.gameSessions.put(session, connect.getGameID());
         // if game color == null  then observer
         boolean observer = connect.getTeamColor() == null;
+        GameData game = null;
+        try {
+            game = Server.gameService.getGame(connect.getAuthToken(), connect.getGameID());
+        } catch (DataAccessException e) {
+            sendError(session, new Error(e.getMessage()));
+            return;
+        }
+        assert game != null;
         String message;
         String username = connect.getUsername();
         if (observer) {
             message = username + " has joined the game as an observer";
         }
+
         else {
             String team = connect.getTeamColor() == ChessGame.TeamColor.WHITE ? "white" : "black";
             message = username + " has joined the game as " + team;
+
+            boolean correctColor;
+            if (connect.getTeamColor() == ChessGame.TeamColor.WHITE) {
+                correctColor = Objects.equals(game.whiteUsername(), connect.getUsername());
+            }
+            else {
+                correctColor = Objects.equals(game.blackUsername(), connect.getUsername());
+            }
+            if (!correctColor) {
+                Error error = new Error("Error: attempting to join with wrong color");
+                sendError(session, error);
+                return;
+            }
         }
         broadcastMessage(session, new Notification(message));
+        broadcastMessage(session, new LoadGame(game.game()));
     }
 
 

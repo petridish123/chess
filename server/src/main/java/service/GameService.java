@@ -83,9 +83,18 @@ public class GameService {
         } else{
             throw new InvalidInput("Not a valid color");
         }
-        GameData newGame = new GameData(gameID, gameName,game.game(), whiteUser, blackUser );
+        GameData newGame = new GameData(gameID, gameName,game.game(), whiteUser, blackUser,null );
         gameDAO.updateGame(newGame);
     }
 
 
+    public GameData getGame(String authToken, Integer gameID) throws DataAccessException {
+        try{
+            authTokenDAO.getAuthData(authToken);
+            return gameDAO.getGame(gameID);
+        }catch (DataAccessException e){
+            throw new DataAccessException("This game doesn't exist");
+        }
+
+    }
 }
