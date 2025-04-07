@@ -57,7 +57,7 @@ public class GameREPL {
                     }
                     postREPL.run();
                     return;
-                case "move":
+                case "move": // send to server facade but it only makes a ws call
                     if (observer){
                         out.println("You are only observing this game, you cannot make moves");
                         break;

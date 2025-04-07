@@ -2,11 +2,15 @@ package facade;
 
 
 //import exception.ErrorResponse;
+import chess.ChessGame;
+import com.google.gson.Gson;
 import exception.ResponseException;
 import model.*;
 import model.GameList;
+import websocket.commands.Connect;
+import websocket.commands.UserGameCommand;
 
-        import java.util.ArrayList;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.Objects;
 
@@ -15,6 +19,9 @@ public class ServerFacade {
     public String serverUrl;
     public String authToken = "";
     Writer writer;
+    websocketWriter ws;
+    String serverDomain;
+    String username;
     public ServerFacade() {
         this("localhost:8080");
     }
@@ -22,6 +29,7 @@ public class ServerFacade {
 
         this.serverUrl = "http://" + serverURL;
         this.writer =  new Writer(this.authToken,this.serverUrl);
+        this.serverDomain = serverURL;
     }
 
 
@@ -31,6 +39,7 @@ public class ServerFacade {
             AuthData auth = this.writer.makeRequest("POST", "/session", user, AuthData.class);
             this.authToken = auth.authToken();
             this.writer.setAuthToken(auth.authToken());
+            this.username = auth.username();
             return true;
         } catch (ResponseException e) {
 
@@ -44,6 +53,7 @@ public class ServerFacade {
             AuthData auth =  this.writer.makeRequest("POST", "/user", user, AuthData.class);
             this.authToken = auth.authToken();
             this.writer.setAuthToken(auth.authToken());
+            this.username = auth.username();
             return true;
         }catch(ResponseException e){
             return false;
@@ -89,20 +99,38 @@ public class ServerFacade {
     }
 
     public boolean joinGame(String playerColor, int gameId) {
+        try{
+            this.ws = new websocketWriter(this.serverDomain);
+        }catch(Exception e){
+            System.out.println("Failed to connect to server");
+            return false;
+        }
+
         Map req;
         if (Objects.isNull(playerColor)){
+            sendCommand(new Connect(this.authToken,gameId, null,this.username));
             return true;
         }
         req = Map.of("playerColor", playerColor, "gameID", gameId);
+        ChessGame.TeamColor color = playerColor.equals("WHITE") ? ChessGame.TeamColor.WHITE : ChessGame.TeamColor.BLACK;
         try{
             this.writer.makeRequest("PUT", "/game", req, null);
+            sendCommand(new Connect(this.authToken,gameId, color,this.username));
             // add websocket writing here
             return true;
         }catch(ResponseException e){
 
             return false;
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+            return false;
         }
 
+    }
+
+    public void sendCommand(UserGameCommand command) {
+        String message = new Gson().toJson(command);
+        ws.sendMessage(message);
     }
 
 }
