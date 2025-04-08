@@ -4,6 +4,7 @@ package facade;
 //import exception.ErrorResponse;
 import chess.ChessGame;
 import chess.ChessMove;
+import chess.ChessPiece;
 import chess.ChessPosition;
 import com.google.gson.Gson;
 import exception.ResponseException;
@@ -130,13 +131,13 @@ public class ServerFacade {
 
     }
 
-    public boolean makeMove(String playerColor, int gameId, String position1, String position2){
+    public boolean makeMove(String playerColor, int gameId, String position1, String position2, ChessPiece.PieceType promotion){
         ChessPosition initialPosition = parseMove(position1);
         ChessPosition finalPosition = parseMove(position2);
         if (Objects.equals(initialPosition, null) ||  Objects.equals(finalPosition,null) || initialPosition.equals(finalPosition) ){
             return false;
         }
-        sendCommand(new MakeMove(playerColor,gameId, new ChessMove(initialPosition, finalPosition, null))); // change this
+        sendCommand(new MakeMove(playerColor,gameId, new ChessMove(initialPosition, finalPosition, promotion))); // change this
         return true;
     }
 
@@ -145,7 +146,7 @@ public class ServerFacade {
         try{
             char moveChar = move.toUpperCase().charAt(0);
             int moveNum = Integer.parseInt(move.substring(1));
-            int col = 'A'-moveChar + 1; // maybe wrong
+            int col = moveChar + 1 - 'A'; // maybe wrong
             System.out.println("HERE LIES: " + String.valueOf(moveNum) + " " + String.valueOf(col));
             return new ChessPosition(moveNum,col);
         }catch(NumberFormatException e){

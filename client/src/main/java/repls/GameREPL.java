@@ -1,6 +1,7 @@
 package repls;
 
 import chess.ChessGame;
+import chess.ChessPiece;
 import model.GameData;
 import facade.ServerFacade;
 
@@ -45,7 +46,7 @@ public class GameREPL {
             //print board here
             String[] input = getUserInput();
             switch(input[0]){
-                case "redraw":
+                case "redraw": // ws load board
                     ChessGame.TeamColor teamColor = (Objects.equals(color, "WHITE")) ? ChessGame.TeamColor.WHITE : ChessGame.TeamColor.BLACK;
                     boardPrinter.printBoard(teamColor);
                     break;
@@ -63,15 +64,20 @@ public class GameREPL {
                         break;
                     }
                     else{
+                        ChessPiece.PieceType promotion = null;
                         if (input.length < 3){
                             out.println("Not enough arguments");
                             out.println("move <start position letter> <end position number>");
                         }
-                        if (!facade.makeMove(color,gameID,input[1], input[2])){
+                        if (input.length >= 4){
+                            promotion = getPieceType(input[3]);
+                        }
+                        if (!facade.makeMove(color,gameID,input[1], input[2],promotion)){
                             out.println("Move failed!");
-                            break;
+
                         }
                     }
+                    break;
                 case "resign":
                     postREPL.run();
                     return;
@@ -114,6 +120,17 @@ public class GameREPL {
     }
     private void leave(){
 
+    }
+
+    public ChessPiece.PieceType getPieceType(String name) {
+        return switch (name.toUpperCase()) {
+            case "QUEEN" -> ChessPiece.PieceType.QUEEN;
+            case "BISHOP" -> ChessPiece.PieceType.BISHOP;
+            case "KNIGHT" -> ChessPiece.PieceType.KNIGHT;
+            case "ROOK" -> ChessPiece.PieceType.ROOK;
+            case "PAWN" -> ChessPiece.PieceType.PAWN;
+            default -> null;
+        };
     }
 
 }

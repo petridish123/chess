@@ -3,6 +3,9 @@ package server.websocket;
 
 
 import chess.ChessGame;
+import chess.ChessMove;
+import chess.ChessPiece;
+import chess.InvalidMoveException;
 import com.google.gson.Gson;
 import dataaccess.DataAccessException;
 import model.AuthData;
@@ -58,7 +61,29 @@ public class WebSocketHandler {
     private void handleLeave(Session session, Leave command) {
     }
 
-    private void handleMakeMove(Session session, MakeMove command) {
+    private void handleMakeMove(Session session, MakeMove command) throws IOException {
+        System.out.println("MADE IT HERE");
+        try {
+            GameData game = Server.gameService.getGame(command.getAuthToken(), command.getGameID());
+            AuthData auth = Server.userService.getAuth(command.getAuthToken());
+
+            if (game.game().)
+
+            if (game.game().getTeamTurn().equals(getTeamColor(auth.username(), game))){
+                game.game().makeMove(command.getMove());
+            }
+        } catch (DataAccessException e) {
+            throw new RuntimeException(e);
+        } catch (InvalidMoveException e) {
+            System.out.println(e.getMessage() + " error with the move");
+            sendError(session, new Error("Invalid move. Check your start and end positions (promotion piece might be mistyped). "));
+        }
+
+        /*
+        Steps I need to do:
+        get the move
+
+         */
     }
 
     private void handleConnect(Session session, Connect connect) throws IOException {
@@ -129,6 +154,16 @@ public class WebSocketHandler {
     private void sendError(Session session, Error error) throws IOException {
         System.out.printf("Error: %s%n", new Gson().toJson(error));
         session.getRemote().sendString(new Gson().toJson(error));
+    }
+
+    ChessGame.TeamColor getTeamColor(String username, GameData game) {
+        if (game.whiteUsername().equals(username)) {
+            return ChessGame.TeamColor.WHITE;
+        } else if (game.blackUsername().equals(username)) {
+            return ChessGame.TeamColor.BLACK;
+        }else{
+            return null;
+        }
     }
 
 

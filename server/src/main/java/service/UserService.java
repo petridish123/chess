@@ -25,7 +25,14 @@ public class UserService {
         this.authTokenDAO = authTokenDAO;
     }
 
+    public AuthData getAuth(String authToken) {
+        try{
+            return authTokenDAO.getAuthData(authToken);
+        }catch (DataAccessException e){
+            return null;
+        }
 
+    }
 
     public AuthData registerUser(UserData user) throws DataAccessException {
 

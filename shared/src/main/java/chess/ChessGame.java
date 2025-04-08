@@ -12,6 +12,7 @@ import java.util.Collection;
 public class ChessGame {
     ChessBoard board;
     TeamColor teamColorTurn;
+    Boolean over = false;
     public ChessGame() {
         this.board = new ChessBoard();
         this.teamColorTurn = TeamColor.WHITE;
@@ -24,7 +25,12 @@ public class ChessGame {
     public TeamColor getTeamTurn() {
         return teamColorTurn;
     }
-
+    public Boolean isOver() {
+        return over;
+    }
+    public void setOver(Boolean over) {
+        this.over = over;
+    }
     /**
      * Set's which teams turn it is
      *
