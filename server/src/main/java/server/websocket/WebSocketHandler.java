@@ -56,6 +56,7 @@ public class WebSocketHandler {
         }
     }
 
+<<<<<<< Updated upstream
     private void handleResign(Session session, Resign command) {
         try {
             GameData game = Server.gameService.getGame(command.getAuthToken(), command.getGameID());
@@ -79,6 +80,47 @@ public class WebSocketHandler {
             AuthData auth = Server.userService.getAuth(command.getAuthToken());
             ChessGame.TeamColor color = getTeamColor(auth.username(),game);
             Server.gameService.leaveGame(command.getAuthToken(), command.getGameID(),color.toString());
+=======
+    private void handleLeave(Session session, Leave command) throws IOException {
+        try {
+            AuthData auth = Server.userService.getAuth(command.getAuthString());
+
+            Notification notif = new Notification("%s has left the game".formatted(auth.username()));
+            broadcastMessage(session, notif);
+
+            session.close();
+        } catch (UnauthorizedException e) {
+            sendError(session, new Error("Error: Not authorized"));
+        }
+    }
+
+    private void handleResign(Session session, Resign command) throws IOException {
+        try {
+            AuthData auth = Server.userService.get(command.getAuthToken());
+            GameData game = Server.gameService.getGame(command.getAuthToken(), command.getGameID());
+            ChessGame.TeamColor userColor = getTeamColor(auth.username(), game);
+
+            String opponentUsername = userColor == ChessGame.TeamColor.WHITE ? game.blackUsername() : game.whiteUsername();
+
+            if (userColor == null) {
+                sendError(session, new Error("Error: You are observing this game"));
+                return;
+            }
+
+            if (game.game().over()) {
+                sendError(session, new Error("Error: The game is already over!"));
+                return;
+            }
+
+            game.game().setGameOver(true);
+            Server.gameService.updateGame(auth.authToken(), game);
+            Notification notif = new Notification("%s has forfeited, %s wins!".formatted(auth.username(), opponentUsername));
+            broadcastMessage(session, notif, true);
+        } catch (UnauthorizedException e) {
+            sendError(session, new Error("Error: Not authorized"));
+        } catch (BadRequestException e) {
+            sendError(session, new Error("Error: invalid game"));
+>>>>>>> Stashed changes
         } catch (DataAccessException e) {
             throw new RuntimeException(e);
         }
@@ -155,9 +197,6 @@ public class WebSocketHandler {
             message = username + " has joined the game as an observer";
         }
         else {
-            String team = connect.getTeamColor() == ChessGame.TeamColor.WHITE ? "white" : "black";
-            message = username + " has joined the game as " + team;
-
             boolean correctColor;
             if (connect.getTeamColor() == ChessGame.TeamColor.WHITE) {
                 correctColor = Objects.equals(game.whiteUsername(), connect.getUsername());
@@ -170,6 +209,10 @@ public class WebSocketHandler {
                 sendError(session, error);
                 return;
             }
+            String team = connect.getTeamColor() == ChessGame.TeamColor.WHITE ? "white" : "black";
+            message = username + " has joined the game as " + team;
+
+
         }
         broadcastMessage(session, new Notification(message));
         broadcastMessage(session, new LoadGame(game.game()), true);
