@@ -56,71 +56,34 @@ public class WebSocketHandler {
         }
     }
 
-<<<<<<< Updated upstream
-    private void handleResign(Session session, Resign command) {
-        try {
-            GameData game = Server.gameService.getGame(command.getAuthToken(), command.getGameID());
-            AuthData auth = Server.userService.getAuth(command.getAuthToken());
-            ChessGame.TeamColor color = getTeamColor(auth.username(), game);
 
-            game.game().setOver(true);
-            broadcastMessage(session, new Notification(auth.username() + "Has resigned"));
-            Server.gameService.updateGame(game);
-        } catch (DataAccessException e) {
-            return;
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
 
-    }
-
-    private void handleLeave(Session session, Leave command) {
-        try{
-            GameData game = Server.gameService.getGame(command.getAuthToken(), command.getGameID());
-            AuthData auth = Server.userService.getAuth(command.getAuthToken());
-            ChessGame.TeamColor color = getTeamColor(auth.username(),game);
-            Server.gameService.leaveGame(command.getAuthToken(), command.getGameID(),color.toString());
-=======
     private void handleLeave(Session session, Leave command) throws IOException {
-        try {
-            AuthData auth = Server.userService.getAuth(command.getAuthString());
-
+            AuthData auth = Server.userService.getAuth(command.getAuthToken());
             Notification notif = new Notification("%s has left the game".formatted(auth.username()));
             broadcastMessage(session, notif);
-
             session.close();
-        } catch (UnauthorizedException e) {
-            sendError(session, new Error("Error: Not authorized"));
-        }
     }
 
     private void handleResign(Session session, Resign command) throws IOException {
         try {
-            AuthData auth = Server.userService.get(command.getAuthToken());
+            AuthData auth = Server.userService.getAuth(command.getAuthToken());
             GameData game = Server.gameService.getGame(command.getAuthToken(), command.getGameID());
             ChessGame.TeamColor userColor = getTeamColor(auth.username(), game);
-
             String opponentUsername = userColor == ChessGame.TeamColor.WHITE ? game.blackUsername() : game.whiteUsername();
 
             if (userColor == null) {
                 sendError(session, new Error("Error: You are observing this game"));
                 return;
             }
-
-            if (game.game().over()) {
+            if (game.game().isOver()) {
                 sendError(session, new Error("Error: The game is already over!"));
                 return;
             }
-
-            game.game().setGameOver(true);
-            Server.gameService.updateGame(auth.authToken(), game);
+            game.game().setOver(true);
+            Server.gameService.updateGame(game);
             Notification notif = new Notification("%s has forfeited, %s wins!".formatted(auth.username(), opponentUsername));
-            broadcastMessage(session, notif, true);
-        } catch (UnauthorizedException e) {
-            sendError(session, new Error("Error: Not authorized"));
-        } catch (BadRequestException e) {
-            sendError(session, new Error("Error: invalid game"));
->>>>>>> Stashed changes
+            broadcastMessage(session, notif, true);;
         } catch (DataAccessException e) {
             throw new RuntimeException(e);
         }
@@ -156,11 +119,11 @@ public class WebSocketHandler {
 
             }
             if (game.game().isInCheckmate(game.game().oppositeTeamColor(color))){
-                broadcastMessage(session, new Notification(game.game().oppositeTeamColor(color).toString() + "is in checkmate!"));
+                broadcastMessage(session, new Notification(game.game().oppositeTeamColor(color).toString() + " is in checkmate!"), true);
                 game.game().setOver(true);
                 Server.gameService.updateGame(game);
             }else if (game.game().isInCheck(game.game().oppositeTeamColor(color))){
-                broadcastMessage(session, new Notification(game.game().oppositeTeamColor(color).toString() + "Is in check!"));
+                broadcastMessage(session, new Notification(game.game().oppositeTeamColor(color).toString() + " Is in check!"), true);
             }
 
         } catch (DataAccessException e) {

@@ -10,10 +10,7 @@ import com.google.gson.Gson;
 import exception.ResponseException;
 import model.*;
 import model.GameList;
-import websocket.commands.Connect;
-import websocket.commands.Leave;
-import websocket.commands.MakeMove;
-import websocket.commands.UserGameCommand;
+import websocket.commands.*;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -113,13 +110,16 @@ public class ServerFacade {
         Map req;
         try{
         if (Objects.isNull(playerColor)){
-            sendCommand(new Connect(this.authToken,gameId, null,this.username));
             req = Map.of("playerColor", null, "gameID", gameId);
             this.writer.makeRequest("PUT", "/game", req, null);
+            sendCommand(new Connect(this.authToken,gameId, null,this.username));
+
+
             return true;
         }} catch (Exception e){
             return false;
         }
+
         req = Map.of("playerColor", playerColor, "gameID", gameId);
         ChessGame.TeamColor color = playerColor.equals("WHITE") ? ChessGame.TeamColor.WHITE : ChessGame.TeamColor.BLACK;
         try{
@@ -139,6 +139,13 @@ public class ServerFacade {
 
     public void leave(int gameID, ChessGame.TeamColor color) {
         sendCommand(new Leave(authToken,gameID));
+    }
+    public void leave(int gameID) {
+        sendCommand(new Leave(authToken, gameID));
+    }
+
+    public void resign(int gameID) {
+        sendCommand(new Resign(authToken, gameID));
     }
 
     public boolean makeMove(int gameId, String position1, String position2, ChessPiece.PieceType promotion){

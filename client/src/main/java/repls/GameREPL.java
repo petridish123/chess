@@ -21,6 +21,7 @@ public class GameREPL {
     int gameID;
     public static String color;
     GameData game;
+    ChessGame.TeamColor teamColor;
     boolean observer = false;
     public static BoardPrinter boardPrinter;
     public GameREPL(ServerFacade facade, PostLoginREPL postREPL) {
@@ -33,6 +34,7 @@ public class GameREPL {
         this.color = color;
         this.game = game;
         boardPrinter = new BoardPrinter(game.game());
+        this.teamColor = (Objects.equals(color, "WHITE")) ? ChessGame.TeamColor.WHITE : ChessGame.TeamColor.BLACK;
     }
 
     void run(){
@@ -47,7 +49,7 @@ public class GameREPL {
             String[] input = getUserInput();
             switch(input[0]){
                 case "redraw": // ws load board
-                    ChessGame.TeamColor teamColor = (Objects.equals(color, "WHITE")) ? ChessGame.TeamColor.WHITE : ChessGame.TeamColor.BLACK;
+
                     boardPrinter.printBoard(teamColor);
                     break;
 
@@ -57,6 +59,7 @@ public class GameREPL {
                         postREPL.run();
                         return;    // actually leave the game here!
                     }
+                    facade.leave(gameID, teamColor);
                     postREPL.run();
                     return;
                 case "move": // send to server facade but it only makes a ws call
@@ -81,6 +84,7 @@ public class GameREPL {
                     }
                     break;
                 case "resign":
+                    facade.resign(gameID);
                     postREPL.run();
                     return;
                 case "highlight":
