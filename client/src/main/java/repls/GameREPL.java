@@ -53,6 +53,7 @@ public class GameREPL {
 
                 case "leave":
                     if (observer){
+                        facade.leave(gameID, null);
                         postREPL.run();
                         return;    // actually leave the game here!
                     }

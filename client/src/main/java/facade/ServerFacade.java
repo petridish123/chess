@@ -11,6 +11,7 @@ import exception.ResponseException;
 import model.*;
 import model.GameList;
 import websocket.commands.Connect;
+import websocket.commands.Leave;
 import websocket.commands.MakeMove;
 import websocket.commands.UserGameCommand;
 
@@ -136,6 +137,10 @@ public class ServerFacade {
 
     }
 
+    public void leave(int gameID, ChessGame.TeamColor color) {
+        sendCommand(new Leave(authToken,gameID));
+    }
+
     public boolean makeMove(int gameId, String position1, String position2, ChessPiece.PieceType promotion){
         ChessPosition initialPosition = parseMove(position1);
         ChessPosition finalPosition = parseMove(position2);
@@ -147,6 +152,8 @@ public class ServerFacade {
 //        System.out.println("Move sucks");
         return true;
     }
+
+
 
     ChessPosition parseMove(String move){
 
@@ -166,6 +173,7 @@ public class ServerFacade {
         String message = new Gson().toJson(command);
         ws.sendMessage(message);
     }
+
 
 
 }

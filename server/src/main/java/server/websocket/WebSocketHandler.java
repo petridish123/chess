@@ -60,6 +60,14 @@ public class WebSocketHandler {
     }
 
     private void handleLeave(Session session, Leave command) {
+        try{
+            GameData game = Server.gameService.getGame(command.getAuthToken(), command.getGameID());
+            AuthData auth = Server.userService.getAuth(command.getAuthToken());
+            ChessGame.TeamColor color = getTeamColor(auth.username(),game);
+            Server.gameService.leaveGame(command.getAuthToken(), command.getGameID(),color.toString());
+        } catch (DataAccessException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private void handleMakeMove(Session session, MakeMove command) throws IOException {
