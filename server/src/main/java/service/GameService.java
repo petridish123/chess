@@ -63,7 +63,7 @@ public class GameService {
         String blackUser = game.blackUsername();
         ChessGame chessGame = game.game();
         String gameName = game.gameName();
-
+        ArrayList<String> observers = game.observers();
         if (Objects.equals(color, "WHITE")){
             if (Objects.equals(game.whiteUsername(), null)||game.whiteUsername().isEmpty()){
                 whiteUser = username;
@@ -80,9 +80,9 @@ public class GameService {
                 throw new UnAuthorizedException("Black username already exists");
             }
         } else{
-            throw new InvalidInput("Not a valid color");
+            observers.add(username);
         }
-        GameData newGame = new GameData(gameID, gameName,game.game(), whiteUser, blackUser,null );
+        GameData newGame = new GameData(gameID, gameName,game.game(), whiteUser, blackUser,observers );
         gameDAO.updateGame(newGame);
     }
 

@@ -102,7 +102,7 @@ public class ServerFacade {
 
     }
 
-    public boolean joinGame(String playerColor, int gameId) {
+    public boolean joinGame(String playerColor, int gameId) throws ResponseException {
         try{
             this.ws = new WebsocketWriter(this.serverDomain);
         }catch(Exception e){
@@ -110,9 +110,14 @@ public class ServerFacade {
             return false;
         }
         Map req;
+        try{
         if (Objects.isNull(playerColor)){
             sendCommand(new Connect(this.authToken,gameId, null,this.username));
+            req = Map.of("playerColor", null, "gameID", gameId);
+            this.writer.makeRequest("PUT", "/game", req, null);
             return true;
+        }} catch (Exception e){
+            return false;
         }
         req = Map.of("playerColor", playerColor, "gameID", gameId);
         ChessGame.TeamColor color = playerColor.equals("WHITE") ? ChessGame.TeamColor.WHITE : ChessGame.TeamColor.BLACK;
