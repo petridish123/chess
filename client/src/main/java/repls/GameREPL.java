@@ -76,9 +76,7 @@ public class GameREPL {
                             out.println("Move failed!");
 
                         }
-                        else {
-                            out.println("Move successful!");
-                        }
+
                     }
                     break;
                 case "resign":

@@ -4,6 +4,7 @@ import javax.websocket.*;
 
 import chess.ChessGame;
 import com.google.gson.Gson;
+import websocket.messages.Error;
 import websocket.messages.LoadGame;
 import websocket.messages.Notification;
 
@@ -11,7 +12,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Objects;
-
+import websocket.messages.*;
 import repls.GameREPL;
 import static ui.EscapeSequences.ERASE_LINE;
 
@@ -43,13 +44,16 @@ public class WebsocketWriter extends Endpoint {
 
 
     private void handleMessage(String message) {
+
         if (message.contains("\"serverMessageType\":\"NOTIFICATION\"")) {
             Notification notif = new Gson().fromJson(message, Notification.class);
             printNotification(notif.getNotification());
         }
         else if (message.contains("\"serverMessageType\":\"ERROR\"")) {
+
             Error error = new Gson().fromJson(message, Error.class);
-            printNotification(error.getMessage());
+            printNotification(error.getError());
+
         }
         else if (message.contains("\"serverMessageType\":\"LOAD_GAME\"")) {
             LoadGame loadGame = new Gson().fromJson(message, LoadGame.class);

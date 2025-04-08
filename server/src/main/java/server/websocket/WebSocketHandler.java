@@ -67,13 +67,19 @@ public class WebSocketHandler {
         try {
             GameData game = Server.gameService.getGame(command.getAuthToken(), command.getGameID());
             AuthData auth = Server.userService.getAuth(command.getAuthToken());
-
+            ChessGame.TeamColor color = getTeamColor(auth.username(),game);
             if (game.game().isOver()){
                 sendError(session,new Error("The game is over you cannot make a move!"));
                 return;
             }
+            Boolean turn = false;
+            if (Objects.equals(game.whiteUsername(), auth.username()) && game.game().getTeamTurn() == ChessGame.TeamColor.WHITE){
+                turn = true;
+            }else if (Objects.equals(game.blackUsername(), auth.username()) && game.game().getTeamTurn() == ChessGame.TeamColor.BLACK){
+                turn = true;
+            }
 
-            if (game.game().getTeamTurn().equals(getTeamColor(auth.username(), game))){
+            if (turn){
                 game.game().makeMove(command.getMove());
                 Server.gameService.updateGame(game);
                 System.out.println(game);
@@ -81,7 +87,18 @@ public class WebSocketHandler {
                 broadcastMessage(session, new LoadGame(game.game()), true);
             }else{
                 sendError(session,new Error("It is not your turn!"));
+                System.out.println(game.game().getTeamTurn());
+                System.out.println(game);
+
             }
+            if (game.game().isInCheckmate(game.game().oppositeTeamColor(color))){
+                broadcastMessage(session, new Notification(game.game().oppositeTeamColor(color).toString() + "is in checkmate!"));
+                game.game().setOver(true);
+                Server.gameService.updateGame(game);
+            }else if (game.game().isInCheck(game.game().oppositeTeamColor(color))){
+                broadcastMessage(session, new Notification(game.game().oppositeTeamColor(color).toString() + "Is in check!"));
+            }
+
         } catch (DataAccessException e) {
             System.out.println(e.getMessage());
             sendError(session,new Error(e.getMessage()));
@@ -115,7 +132,6 @@ public class WebSocketHandler {
         if (observer) {
             message = username + " has joined the game as an observer";
         }
-
         else {
             String team = connect.getTeamColor() == ChessGame.TeamColor.WHITE ? "white" : "black";
             message = username + " has joined the game as " + team;
@@ -134,7 +150,8 @@ public class WebSocketHandler {
             }
         }
         broadcastMessage(session, new Notification(message));
-        broadcastMessage(session, new LoadGame(game.game()));
+        broadcastMessage(session, new LoadGame(game.game()), true);
+
     }
 
 
