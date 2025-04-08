@@ -105,7 +105,6 @@ public class ServerFacade {
             System.out.println("Failed to connect to server");
             return false;
         }
-
         Map req;
         if (Objects.isNull(playerColor)){
             sendCommand(new Connect(this.authToken,gameId, null,this.username));
