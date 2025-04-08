@@ -130,7 +130,7 @@ public class ServerFacade {
 
     }
 
-    boolean makeMove(String playerColor, int gameId, String position1, String position2){
+    public boolean makeMove(String playerColor, int gameId, String position1, String position2){
         ChessPosition initialPosition = parseMove(position1);
         ChessPosition finalPosition = parseMove(position2);
         if (Objects.equals(initialPosition, null) ||  Objects.equals(finalPosition,null) || initialPosition.equals(finalPosition) ){
@@ -158,5 +158,6 @@ public class ServerFacade {
         String message = new Gson().toJson(command);
         ws.sendMessage(message);
     }
+
 
 }

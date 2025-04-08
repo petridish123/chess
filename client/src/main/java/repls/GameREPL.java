@@ -62,6 +62,16 @@ public class GameREPL {
                         out.println("You are only observing this game, you cannot make moves");
                         break;
                     }
+                    else{
+                        if (input.length < 3){
+                            out.println("Not enough arguments");
+                            out.println("move <start position letter> <end position number>");
+                        }
+                        if (!facade.makeMove(color,gameID,input[1], input[2])){
+                            out.println("Move failed!");
+                            break;
+                        }
+                    }
                 case "resign":
                     postREPL.run();
                     return;
