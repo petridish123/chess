@@ -3,11 +3,14 @@ package facade;
 
 //import exception.ErrorResponse;
 import chess.ChessGame;
+import chess.ChessMove;
+import chess.ChessPosition;
 import com.google.gson.Gson;
 import exception.ResponseException;
 import model.*;
 import model.GameList;
 import websocket.commands.Connect;
+import websocket.commands.MakeMove;
 import websocket.commands.UserGameCommand;
 
 import java.util.ArrayList;
@@ -123,6 +126,29 @@ public class ServerFacade {
         } catch (Exception e) {
             System.out.println("Error: " + e.getMessage());
             return false;
+        }
+
+    }
+
+    boolean makeMove(String playerColor, int gameId, String position1, String position2){
+        ChessPosition initialPosition = parseMove(position1);
+        ChessPosition finalPosition = parseMove(position2);
+        if (Objects.equals(initialPosition, null) ||  Objects.equals(finalPosition,null) || initialPosition.equals(finalPosition) ){
+            return false;
+        }
+        sendCommand(new MakeMove(playerColor,gameId, new ChessMove(initialPosition, finalPosition, null))); // change this
+        return true;
+    }
+
+    ChessPosition parseMove(String move){
+
+        try{
+            char moveChar = move.toUpperCase().charAt(0);
+            int moveNum = Integer.parseInt(move.substring(1));
+            int col = 'A'-moveChar + 1; // maybe wrong
+            return new ChessPosition(moveNum,col);
+        }catch(NumberFormatException e){
+            return null;
         }
 
     }
