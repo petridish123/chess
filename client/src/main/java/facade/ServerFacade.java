@@ -146,6 +146,7 @@ public class ServerFacade {
             char moveChar = move.toUpperCase().charAt(0);
             int moveNum = Integer.parseInt(move.substring(1));
             int col = 'A'-moveChar + 1; // maybe wrong
+            System.out.println("HERE LIES: " + String.valueOf(moveNum) + " " + String.valueOf(col));
             return new ChessPosition(moveNum,col);
         }catch(NumberFormatException e){
             return null;
