@@ -23,7 +23,7 @@ public class ServerFacade {
     public String serverUrl;
     public String authToken = "";
     Writer writer;
-    websocketWriter ws;
+    WebsocketWriter ws;
     String serverDomain;
     String username;
     public ServerFacade() {
@@ -104,7 +104,7 @@ public class ServerFacade {
 
     public boolean joinGame(String playerColor, int gameId) {
         try{
-            this.ws = new websocketWriter(this.serverDomain);
+            this.ws = new WebsocketWriter(this.serverDomain);
         }catch(Exception e){
             System.out.println("Failed to connect to server");
             return false;

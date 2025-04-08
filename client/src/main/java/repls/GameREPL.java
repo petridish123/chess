@@ -109,21 +109,7 @@ public class GameREPL {
 
     }
 
-    private void move(){
 
-    }
-    private void resign(){
-
-    }
-    private void printBoard(ChessGame.TeamColor teamColor){
-
-    }
-    private void highlight(){
-
-    }
-    private void leave(){
-
-    }
 
     public ChessPiece.PieceType getPieceType(String name) {
         return switch (name.toUpperCase()) {

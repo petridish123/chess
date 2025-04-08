@@ -63,9 +63,7 @@ public class WebSocketHandler {
     }
 
     private void handleMakeMove(Session session, MakeMove command) throws IOException {
-//        broadcastMessage(session, new Notification("GYAH"));
-//        System.out.println("MADE IT HERE");
-//        System.out.println(Server.gameSessions);
+
         try {
             GameData game = Server.gameService.getGame(command.getAuthToken(), command.getGameID());
             AuthData auth = Server.userService.getAuth(command.getAuthToken());

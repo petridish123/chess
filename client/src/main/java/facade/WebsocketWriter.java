@@ -4,10 +4,9 @@ import javax.websocket.*;
 
 import chess.ChessGame;
 import com.google.gson.Gson;
-import exception.ResponseException;
 import websocket.messages.LoadGame;
 import websocket.messages.Notification;
-import ui.EscapeSequences;
+
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -17,11 +16,11 @@ import repls.GameREPL;
 import static ui.EscapeSequences.ERASE_LINE;
 
 
-public class websocketWriter extends Endpoint {
+public class WebsocketWriter extends Endpoint {
 
     Session session;
 
-    public websocketWriter(String serverDomain) throws Exception {
+    public WebsocketWriter(String serverDomain) throws Exception {
         try {
             URI uri = new URI("ws://" + serverDomain + "/ws");
 
