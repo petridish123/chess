@@ -57,6 +57,20 @@ public class WebSocketHandler {
     }
 
     private void handleResign(Session session, Resign command) {
+        try {
+            GameData game = Server.gameService.getGame(command.getAuthToken(), command.getGameID());
+            AuthData auth = Server.userService.getAuth(command.getAuthToken());
+            ChessGame.TeamColor color = getTeamColor(auth.username(), game);
+
+            game.game().setOver(true);
+            broadcastMessage(session, new Notification(auth.username() + "Has resigned"));
+            Server.gameService.updateGame(game);
+        } catch (DataAccessException e) {
+            return;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
     private void handleLeave(Session session, Leave command) {
