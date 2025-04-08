@@ -72,9 +72,12 @@ public class GameREPL {
                         if (input.length >= 4){
                             promotion = getPieceType(input[3]);
                         }
-                        if (!facade.makeMove(color,gameID,input[1], input[2],promotion)){
+                        if (!facade.makeMove(gameID,input[1], input[2],promotion)){
                             out.println("Move failed!");
 
+                        }
+                        else {
+                            out.println("Move successful!");
                         }
                     }
                     break;

@@ -60,7 +60,7 @@ public class websocketWriter extends Endpoint {
 
     private void printNotification(String message) {
         System.out.print(ERASE_LINE + '\r');
-        System.out.printf("\n%s\n[IN-GAME] >>> ", message);
+        System.out.println(message);
     }
 
     private void printLoadedGame(ChessGame game) {

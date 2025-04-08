@@ -131,13 +131,15 @@ public class ServerFacade {
 
     }
 
-    public boolean makeMove(String playerColor, int gameId, String position1, String position2, ChessPiece.PieceType promotion){
+    public boolean makeMove(int gameId, String position1, String position2, ChessPiece.PieceType promotion){
         ChessPosition initialPosition = parseMove(position1);
         ChessPosition finalPosition = parseMove(position2);
         if (Objects.equals(initialPosition, null) ||  Objects.equals(finalPosition,null) || initialPosition.equals(finalPosition) ){
+//            System.out.println("Move BRICKED");
             return false;
         }
-        sendCommand(new MakeMove(playerColor,gameId, new ChessMove(initialPosition, finalPosition, promotion))); // change this
+        sendCommand(new MakeMove(authToken,gameId, new ChessMove(initialPosition, finalPosition, promotion))); // change this
+//        System.out.println("Move sucks");
         return true;
     }
 
@@ -147,7 +149,7 @@ public class ServerFacade {
             char moveChar = move.toUpperCase().charAt(0);
             int moveNum = Integer.parseInt(move.substring(1));
             int col = moveChar + 1 - 'A'; // maybe wrong
-            System.out.println("HERE LIES: " + String.valueOf(moveNum) + " " + String.valueOf(col));
+//            System.out.println("HERE LIES: " + String.valueOf(moveNum) + " " + String.valueOf(col));
             return new ChessPosition(moveNum,col);
         }catch(NumberFormatException e){
             return null;

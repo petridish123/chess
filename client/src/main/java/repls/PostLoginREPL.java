@@ -50,6 +50,7 @@ public class PostLoginREPL {
                                 out.println("You joined the game as " + input[2]);
                                 this.gameREPL.setGame(Integer.parseInt(input[1]),input[2], games.get(id));
                                 this.gameREPL.run();
+                                break;
                             }
                             else{
                                 out.println("Please type in a valid game number and color");

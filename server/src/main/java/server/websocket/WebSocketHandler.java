@@ -37,6 +37,7 @@ public class WebSocketHandler {
 
     @OnWebSocketMessage
     public void onMessage(Session session, String message) throws IOException {
+        System.out.println(message);
         if (message.contains("\"commandType\":\"CONNECT\"")){
             Connect connect = new Gson().fromJson(message, Connect.class);
             handleConnect(session, connect);
@@ -62,17 +63,30 @@ public class WebSocketHandler {
     }
 
     private void handleMakeMove(Session session, MakeMove command) throws IOException {
-        System.out.println("MADE IT HERE");
+//        broadcastMessage(session, new Notification("GYAH"));
+//        System.out.println("MADE IT HERE");
+//        System.out.println(Server.gameSessions);
         try {
             GameData game = Server.gameService.getGame(command.getAuthToken(), command.getGameID());
             AuthData auth = Server.userService.getAuth(command.getAuthToken());
 
-            if (game.game().)
+            if (game.game().isOver()){
+                sendError(session,new Error("The game is over you cannot make a move!"));
+                return;
+            }
 
             if (game.game().getTeamTurn().equals(getTeamColor(auth.username(), game))){
                 game.game().makeMove(command.getMove());
+                Server.gameService.updateGame(game);
+                System.out.println(game);
+                broadcastMessage(session, new Notification(auth.username() + " has made a move!"));
+                broadcastMessage(session, new LoadGame(game.game()), true);
+            }else{
+                sendError(session,new Error("It is not your turn!"));
             }
         } catch (DataAccessException e) {
+            System.out.println(e.getMessage());
+            sendError(session,new Error(e.getMessage()));
             throw new RuntimeException(e);
         } catch (InvalidMoveException e) {
             System.out.println(e.getMessage() + " error with the move");

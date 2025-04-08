@@ -92,7 +92,7 @@ public class ChessGame {
         ChessPiece piece = board.getPiece(move.getStartPosition());
         Collection<ChessMove> moves = validMoves(move.getStartPosition());
         if (piece == null || !moves.contains(move) || teamColorTurn != piece.getTeamColor()) {
-            throw new InvalidMoveException();
+            throw new InvalidMoveException(teamColorTurn.toString());
         }
 
         if (piece.getPieceType() == ChessPiece.PieceType.PAWN && move.getPromotionPiece() != null) {

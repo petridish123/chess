@@ -4,7 +4,6 @@ import model.*;
 import dataaccess.*;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Objects;
 
 import chess.*;
@@ -96,5 +95,9 @@ public class GameService {
             throw new DataAccessException("This game doesn't exist");
         }
 
+    }
+
+    public void updateGame(GameData game) throws DataAccessException {
+        gameDAO.updateGame(game);
     }
 }
