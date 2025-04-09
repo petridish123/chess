@@ -110,7 +110,6 @@ public class GameHandler {
 
         try{
             gameService.joinGame(authToken, id, color);
-
         }catch (InvalidInput e){
             res.status(400);
             return "{\"message\": \"Error: Forbidden\" }";

@@ -67,13 +67,18 @@ public class WebSocketHandler {
 
 
                 AuthData auth = Server.userService.getAuth(command.getAuthToken());
+                // remove from database using game service new command
+                Server.gameService.leaveGame(command.getAuthToken(), command.getGameID());
                 Notification notif = new Notification("%s has left the game".formatted(auth.username()));
-                broadcastMessage(session, notif, true);
+                broadcastMessage(session, notif, false);
                 Server.gameSessions.remove(session);
                 session.close();
             }catch (IOException e){
                 System.out.println(e.getMessage());
                 sendError(session, new Error("PT 3"));
+            } catch (DataAccessException e) {
+                System.out.println(e.getMessage());
+                sendError(session, new Error("You are unauthorized"));
             }
     }
 

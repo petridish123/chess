@@ -100,7 +100,21 @@ public class GameService {
 
     }
 
-
+    public void leaveGame(String authToken, int gameID) throws DataAccessException {
+        AuthData user =  authTokenDAO.getAuthData(authToken);
+        GameData game = gameDAO.getGame(gameID);
+        ChessGame chess = game.game();
+        String white = game.whiteUsername();
+        String black = game.blackUsername();
+        ArrayList<String> observers = game.observers();
+        if (user.username().equals(game.whiteUsername())){
+             white = null;
+        } else if (user.username().equals(game.blackUsername())) {
+            black = null;
+        }
+        game = new GameData(gameID,game.gameName(), chess,white,black, observers);
+        updateGame(game);
+    }
 
     public void updateGame(GameData game) throws DataAccessException {
         gameDAO.updateGame(game);
