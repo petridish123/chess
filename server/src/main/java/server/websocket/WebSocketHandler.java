@@ -78,7 +78,7 @@ public class WebSocketHandler {
                 sendError(session, new Error("PT 3"));
             } catch (DataAccessException e) {
                 System.out.println(e.getMessage());
-                sendError(session, new Error("You are unauthorized"));
+                sendError(session, new Error("You are unauthorized" + e.getMessage()));
             }
     }
 
@@ -234,6 +234,7 @@ public class WebSocketHandler {
     }
 
     public void sendMessage(Session session, ServerMessage message) throws IOException {
+        System.out.println("Sending " + message.toString());
         session.getRemote().sendString(new Gson().toJson(message));
     }
 

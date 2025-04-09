@@ -140,9 +140,7 @@ public class ServerFacade {
     public void leave(int gameID, ChessGame.TeamColor color) {
         sendCommand(new Leave(authToken,gameID));
     }
-    public void leave(int gameID) {
-        sendCommand(new Leave(authToken, gameID));
-    }
+
 
     public void resign(int gameID) {
         sendCommand(new Resign(authToken, gameID));

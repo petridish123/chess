@@ -107,12 +107,14 @@ public class GameService {
         String white = game.whiteUsername();
         String black = game.blackUsername();
         ArrayList<String> observers = game.observers();
-        if (user.username().equals(game.whiteUsername())){
+        if (!Objects.equals(game.whiteUsername(),null) &&user.username().equals(game.whiteUsername())){
+            System.out.println("HERE HERE HER EERERERER");
              white = null;
-        } else if (user.username().equals(game.blackUsername())) {
+        } else if (!Objects.equals(game.blackUsername(),null) &&user.username().equals(game.blackUsername())) {
             black = null;
         }
-        game = new GameData(gameID,game.gameName(), chess,white,black, observers);
+        game = new GameData(gameID + 1,game.gameName(), chess,white,black, observers);
+        System.out.println(game);
         updateGame(game);
     }
 
