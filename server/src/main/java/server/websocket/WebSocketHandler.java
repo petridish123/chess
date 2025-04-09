@@ -59,13 +59,21 @@ public class WebSocketHandler {
 
 
     private void handleLeave(Session session, Leave command) throws IOException {
-            AuthData auth = Server.userService.getAuth(command.getAuthToken());
-            Notification notif = new Notification("%s has left the game".formatted(auth.username()));
-            broadcastMessage(session, notif, true);
-            session.close();
+            try {
+
+
+                AuthData auth = Server.userService.getAuth(command.getAuthToken());
+                Notification notif = new Notification("%s has left the game".formatted(auth.username()));
+                broadcastMessage(session, notif, true);
+                Server.gameSessions.remove(session);
+                session.close();
+            }catch (IOException e){
+                System.out.println(e.getMessage());
+                sendError(session, new Error("PT 3"));
+            }
     }
 
-    private void handleResign(Session session, Resign command) throws IOException {
+    private void handleResign(Session session, Resign command){
         try {
             AuthData auth = Server.userService.getAuth(command.getAuthToken());
             GameData game = Server.gameService.getGame(command.getAuthToken(), command.getGameID());
@@ -86,10 +94,13 @@ public class WebSocketHandler {
             broadcastMessage(session, notif, true);;
         } catch (DataAccessException e) {
             sendError(session, new Error("Error: "));
+        }catch (IOException e){
+            System.out.println(e.getMessage());
+            sendError(session, new Error("Error: IO Errror pt 2 "));
         }
     }
 
-    private void handleMakeMove(Session session, MakeMove command) throws IOException {
+    private void handleMakeMove(Session session, MakeMove command)  {
 
         try {
             GameData game = Server.gameService.getGame(command.getAuthToken(), command.getGameID());
@@ -134,6 +145,9 @@ public class WebSocketHandler {
         } catch (InvalidMoveException e) {
             System.out.println(e.getMessage() + " error with the move");
             sendError(session, new Error("Invalid move. Check your start and end positions (promotion piece might be mistyped). "));
+        }catch (IOException e){
+            System.out.println(e.getMessage());
+            sendError(session,new Error("IO exception"));
         }
 
         /*
@@ -152,37 +166,40 @@ public class WebSocketHandler {
             game = Server.gameService.getGame(connect.getAuthToken(), connect.getGameID());
             System.out.println();
             System.out.println(game);
+
+            assert game != null;
+            String message;
+            String username = connect.getUsername();
+            if (observer) {
+                message = username + " has joined the game as an observer";
+            }
+            else {
+                boolean correctColor;
+                if (connect.getTeamColor() == ChessGame.TeamColor.WHITE) {
+                    correctColor = Objects.equals(game.whiteUsername(), connect.getUsername());
+                }
+                else {
+                    correctColor = Objects.equals(game.blackUsername(), connect.getUsername());
+                }
+                if (!correctColor) {
+                    Error error = new Error("Error: attempting to join with wrong color");
+                    sendError(session, error);
+                    return;
+                }
+                String team = connect.getTeamColor() == ChessGame.TeamColor.WHITE ? "white" : "black";
+                message = username + " has joined the game as " + team;
+
+
+            }
+            broadcastMessage(session, new Notification(message));
+            broadcastMessage(session, new LoadGame(game.game()), true);
         } catch (DataAccessException e) {
             sendError(session, new Error("e.getMessage()"));
             return;
+        }catch (IOException e){
+            System.out.println(e.getMessage());
+            sendError(session, new Error("IO exception pt 4"));
         }
-        assert game != null;
-        String message;
-        String username = connect.getUsername();
-        if (observer) {
-            message = username + " has joined the game as an observer";
-        }
-        else {
-            boolean correctColor;
-            if (connect.getTeamColor() == ChessGame.TeamColor.WHITE) {
-                correctColor = Objects.equals(game.whiteUsername(), connect.getUsername());
-            }
-            else {
-                correctColor = Objects.equals(game.blackUsername(), connect.getUsername());
-            }
-            if (!correctColor) {
-                Error error = new Error("Error: attempting to join with wrong color");
-                sendError(session, error);
-                return;
-            }
-            String team = connect.getTeamColor() == ChessGame.TeamColor.WHITE ? "white" : "black";
-            message = username + " has joined the game as " + team;
-
-
-        }
-        broadcastMessage(session, new Notification(message));
-        broadcastMessage(session, new LoadGame(game.game()), true);
-
     }
 
 
@@ -211,12 +228,17 @@ public class WebSocketHandler {
         session.getRemote().sendString(new Gson().toJson(message));
     }
 
-    private void sendError(Session session, Error error) throws IOException {
-        if (error.getError().equals(null)){
-            error = new Error("Placeholder");
+    private void sendError(Session session, Error error){
+        try {
+            if (error.getError().equals(null)) {
+                error = new Error("Placeholder");
+            }
+            System.out.printf("Error: %s%n", new Gson().toJson(error));
+            session.getRemote().sendString(new Gson().toJson(error));
+        }catch (IOException e){
+            System.out.println(e.getMessage());
+
         }
-        System.out.printf("Error: %s%n", new Gson().toJson(error));
-        session.getRemote().sendString(new Gson().toJson(error));
     }
 
     ChessGame.TeamColor getTeamColor(String username, GameData game) {
