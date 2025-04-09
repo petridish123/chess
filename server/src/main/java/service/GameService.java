@@ -100,36 +100,7 @@ public class GameService {
 
     }
 
-    public void leaveGame(String authToken, int gameID, String color) throws DataAccessException {
-        GameData game = gameDAO.getGame(gameID);
-        AuthData authData = authTokenDAO.getAuthData(authToken);
-        String username = authData.username();
-        String whiteUser = game.whiteUsername();
-        String blackUser = game.blackUsername();
-        ChessGame chessGame = game.game();
-        String gameName = game.gameName();
-        ArrayList<String> observers = game.observers();
-        if (Objects.equals(color, "WHITE")){
-            if (Objects.equals(game.whiteUsername(), username)){
-                whiteUser = null;
-            }
-            else{
-                throw new UnAuthorizedException("White username already exists");
-            }
-        }
-        else if (Objects.equals(color, "BLACK")){
-            if (Objects.equals(game.blackUsername(), username)){
-                blackUser = null;
-            }
-            else{
-                throw new UnAuthorizedException("Black username already exists");
-            }
-        } else{
-            observers.remove(username);
-        }
-        GameData newGame = new GameData(gameID, gameName,game.game(), whiteUser, blackUser,observers);
-        gameDAO.updateGame(newGame);
-    }
+
 
     public void updateGame(GameData game) throws DataAccessException {
         gameDAO.updateGame(game);

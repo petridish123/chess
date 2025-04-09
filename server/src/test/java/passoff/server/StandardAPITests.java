@@ -131,7 +131,7 @@ public class StandardAPITests {
         TestUser registerRequest = new TestUser(newUser.getUsername(), null, newUser.getEmail());
 
         TestAuthResult registerResult = serverFacade.register(registerRequest);
- 
+
         assertHttpBadRequest(registerResult);
         assertAuthFieldsMissing(registerResult);
     }
