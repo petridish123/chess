@@ -61,7 +61,7 @@ public class WebSocketHandler {
     private void handleLeave(Session session, Leave command) throws IOException {
             AuthData auth = Server.userService.getAuth(command.getAuthToken());
             Notification notif = new Notification("%s has left the game".formatted(auth.username()));
-            broadcastMessage(session, notif);
+            broadcastMessage(session, notif, true);
             session.close();
     }
 
@@ -85,7 +85,7 @@ public class WebSocketHandler {
             Notification notif = new Notification("%s has forfeited, %s wins!".formatted(auth.username(), opponentUsername));
             broadcastMessage(session, notif, true);;
         } catch (DataAccessException e) {
-            throw new RuntimeException(e);
+            sendError(session, new Error("Error: "));
         }
     }
 
@@ -102,8 +102,10 @@ public class WebSocketHandler {
             Boolean turn = false;
             if (Objects.equals(game.whiteUsername(), auth.username()) && game.game().getTeamTurn() == ChessGame.TeamColor.WHITE){
                 turn = true;
+                System.out.println("Turn is white");
             }else if (Objects.equals(game.blackUsername(), auth.username()) && game.game().getTeamTurn() == ChessGame.TeamColor.BLACK){
                 turn = true;
+                System.out.println("Turn is black");
             }
 
             if (turn){
@@ -128,8 +130,7 @@ public class WebSocketHandler {
 
         } catch (DataAccessException e) {
             System.out.println(e.getMessage());
-            sendError(session,new Error(e.getMessage()));
-            throw new RuntimeException(e);
+            sendError(session,new Error("e.getMessage()"));
         } catch (InvalidMoveException e) {
             System.out.println(e.getMessage() + " error with the move");
             sendError(session, new Error("Invalid move. Check your start and end positions (promotion piece might be mistyped). "));
@@ -149,8 +150,10 @@ public class WebSocketHandler {
         GameData game = null;
         try {
             game = Server.gameService.getGame(connect.getAuthToken(), connect.getGameID());
+            System.out.println();
+            System.out.println(game);
         } catch (DataAccessException e) {
-            sendError(session, new Error(e.getMessage()));
+            sendError(session, new Error("e.getMessage()"));
             return;
         }
         assert game != null;
@@ -209,14 +212,18 @@ public class WebSocketHandler {
     }
 
     private void sendError(Session session, Error error) throws IOException {
+        if (error.getError().equals(null)){
+            error = new Error("Placeholder");
+        }
         System.out.printf("Error: %s%n", new Gson().toJson(error));
         session.getRemote().sendString(new Gson().toJson(error));
     }
 
     ChessGame.TeamColor getTeamColor(String username, GameData game) {
-        if (game.whiteUsername().equals(username)) {
+
+        if (!Objects.equals(game.whiteUsername(),null)&&game.whiteUsername().equals(username)) {
             return ChessGame.TeamColor.WHITE;
-        } else if (game.blackUsername().equals(username)) {
+        } else if (!Objects.equals(game.blackUsername(), null) && game.blackUsername().equals(username)) {
             return ChessGame.TeamColor.BLACK;
         }else{
             return null;

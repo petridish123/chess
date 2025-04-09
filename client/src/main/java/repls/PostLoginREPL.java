@@ -44,11 +44,11 @@ public class PostLoginREPL {
                         try {
                             int id = Integer.parseInt(input[1]);
                             String color = input[2].toUpperCase();
-                            if (facade.joinGame(input[2], id+1)) {
+                            if (facade.joinGame(color, id+1)) {
                                 getGames();
                                 joined = true;
                                 out.println("You joined the game as " + input[2]);
-                                this.gameREPL.setGame(Integer.parseInt(input[1]),input[2], games.get(id));
+                                this.gameREPL.setGame(Integer.parseInt(input[1]),color, games.get(id));
                                 this.gameREPL.run();
                                 break;
                             }

@@ -109,9 +109,9 @@ public class ServerFacade {
         }
         Map req;
         try{
-        if (Objects.isNull(playerColor)){
-            req = Map.of("playerColor", null, "gameID", gameId);
-            this.writer.makeRequest("PUT", "/game", req, null);
+        if (Objects.equals(playerColor, null)) {
+//            req = Map.of("playerColor", null, "gameID", gameId);
+//            this.writer.makeRequest("PUT", "/game", req, null);
             sendCommand(new Connect(this.authToken,gameId, null,this.username));
 
 
