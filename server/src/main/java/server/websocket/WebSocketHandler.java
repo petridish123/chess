@@ -11,6 +11,7 @@ import dataaccess.DataAccessException;
 import model.AuthData;
 import model.GameData;
 import model.UserData;
+import org.eclipse.jetty.websocket.api.annotations.OnWebSocketClose;
 import server.*;
 import exception.ResponseException;
 import org.eclipse.jetty.websocket.api.Session;
@@ -56,7 +57,10 @@ public class WebSocketHandler {
         }
     }
 
-
+    @OnWebSocketClose
+    public void onClose(Session session, int statusCode, String reason) {
+        Server.gameSessions.remove(session);
+    }
 
     private void handleLeave(Session session, Leave command) throws IOException {
             try {
@@ -192,7 +196,7 @@ public class WebSocketHandler {
 
             }
             broadcastMessage(session, new Notification(message));
-            broadcastMessage(session, new LoadGame(game.game()), true);
+            sendMessage(session, new LoadGame(game.game()));
         } catch (DataAccessException e) {
             sendError(session, new Error("e.getMessage()"));
             return;
